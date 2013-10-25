@@ -1,12 +1,12 @@
 package objects
 {
-	import citrus.input.controllers.Keyboard;
-	import citrus.math.MathVector;
-	
 	import core.Assets;
+	
+	import flash.geom.Rectangle;
 	
 	import starling.display.Image;
 	import starling.display.Sprite;
+	import starling.events.Event;
 	
 	import states.GameState;
 	
@@ -23,6 +23,7 @@ package objects
 		
 		private var _canFire:Boolean;
 		private var _speed:Number;
+		private var _fireRate:Number;
 		
 		public function Hero(game:GameState)
 		{
@@ -30,13 +31,19 @@ package objects
 			
 			_game = game;
 			
-			initialize();
+			this.addEventListener(Event.ADDED_TO_STAGE, initialize);
 		}
 		
 		private function initialize():void
 		{
+			this.removeEventListener(Event.ADDED_TO_STAGE, initialize);
+			
 			_canFire = false;
 			_speed = 3;
+			_fireRate = 20;
+			
+			// the area the player is allowed to move
+			
 			
 			createArt();
 		}
@@ -46,6 +53,11 @@ package objects
 			_image1 = new Image(Assets.textureAtlasSpaceship.getTexture("spaceship-final instance 10000"));
 			_image1.alignPivot("center", "center");
 			this.addChild(_image1);
+		}
+		
+		public function fire():void
+		{
+			_game.bulletManager.spawnBullet();
 		}
 		
 		public function update(deltaTime:Number):void
@@ -82,7 +94,15 @@ package objects
 			_speed = value;
 		}
 
+		public function get fireRate():Number
+		{
+			return _fireRate;
+		}
 
+		public function set fireRate(value:Number):void
+		{
+			_fireRate = value;
+		}
 	}
 }
 

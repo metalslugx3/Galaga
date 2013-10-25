@@ -51,17 +51,6 @@ package states
 			
 			// destroy title
 			// destroy bg
-			
-			// remove Starling buttons
-			_optionsBtn.removeEventListener(Event.TRIGGERED, buttonTriggered);
-			_optionsBtn.dispose();
-			this.removeChild(_optionsBtn);
-			_optionsBtn = null;
-			
-			_startBtn.removeEventListener(Event.TRIGGERED, buttonTriggered);
-			_startBtn.dispose();
-			this.removeChild(_startBtn);
-			_startBtn = null;
 		}
 		
 		private function createBackground():void
@@ -126,6 +115,8 @@ package states
 		
 		private function startGame():void
 		{
+			destroyStarlingObjects();
+			
 			_ce.state = new GameState();
 		}
 		
@@ -133,6 +124,21 @@ package states
 		{
 			// TODO Auto Generated method stub
 			
+		}
+		
+		private function destroyStarlingObjects():void
+		{
+			//remove Starling buttons
+			_optionsBtn.removeEventListener(Event.TRIGGERED, buttonTriggered);
+			this.removeChild(_optionsBtn);
+			_optionsBtn.dispose();
+			_optionsBtn = null;
+			
+			_startBtn.removeEventListener(Event.TRIGGERED, buttonTriggered);
+			this.removeChild(_startBtn);
+			_startBtn.useHandCursor = false;
+			_startBtn.dispose();
+			_startBtn = null;
 		}
 	}
 }
