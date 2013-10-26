@@ -2,6 +2,7 @@ package states
 {
 	import citrus.core.starling.StarlingState;
 	import citrus.input.controllers.Keyboard;
+	import citrus.view.starlingview.StarlingView;
 	
 	import flash.geom.Rectangle;
 	import flash.utils.getTimer;
@@ -80,12 +81,22 @@ package states
 		 */		
 		private function checkDifficulty():void
 		{
+			StarlingView
 			if (getTimer() - _lastTime > _timeToIncreaseDifficulty)
 			{
+				// increase the current level
 				_level++;
-				trace(_level);
+				
+				// set the last time to the current time
 				_lastTime = getTimer();
+				
+				// increase the difficulty for each Alien
 				_alienManager.increaseDifficulty();
+				
+				// increase bg scroll speed slightly
+				_bg.velocity = [0, _bg.velocity[1]+=1];
+				
+				trace(_level);
 			}
 		}
 		
@@ -165,6 +176,7 @@ package states
 		{
 			_bulletManager.update(deltaTime);
 			_alienManager.update(deltaTime);
+			_collisionManager.update(deltaTime);
 		}
 		
 		private function createBackground():void
@@ -185,6 +197,7 @@ package states
 		{
 			_bulletManager = new BulletManager(this);
 			_alienManager = new AlienManager(this);
+			_collisionManager = new CollisionManager(this);
 		}
 		
 		private function createKeyInputs():void

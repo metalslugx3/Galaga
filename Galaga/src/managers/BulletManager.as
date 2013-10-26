@@ -108,6 +108,17 @@ package managers
 			// remove reference to _game
 			_game = null;
 		}
+
+		public function get bulletsActive():Array
+		{
+			return _bulletsActive;
+		}
+
+		public function set bulletsActive(value:Array):void
+		{
+			_bulletsActive = value;
+		}
+
 	}
 }
 

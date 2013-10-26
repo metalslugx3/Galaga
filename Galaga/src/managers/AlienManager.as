@@ -44,9 +44,9 @@ package managers
 			
 		private function initialize():void
 		{
-			_maxEasyAliens = 30;
-			_maxMediumAliens = 30;
-			_maxHardAliens = 30;
+			_maxEasyAliens = 1;
+			_maxMediumAliens = 0;
+			_maxHardAliens = 0;
 			
 			_poolAlienEasy = new StarlingPool(AlienEasy, _maxEasyAliens);
 			_poolAlienMedium = new StarlingPool(AlienMedium, _maxMediumAliens);
@@ -123,9 +123,9 @@ package managers
 		public function spawnAlien(type:int):void
 		{
 			// only this amount of Aliens allowed on-screens; needs to be re-worked
-			if (_aliensActive.length > _maxEasyAliens)
+			if (_aliensActive.length >= _maxEasyAliens)
 			{
-				trace("Cannot create more aliens that is allowed.");
+				trace("Cannot create more aliens than allowed.");
 				return;
 			}
 			
@@ -242,6 +242,17 @@ package managers
 			// remove reference to _game
 			_game = null;
 		}
+
+		public function get aliensActive():Array
+		{
+			return _aliensActive;
+		}
+
+		public function set aliensActive(value:Array):void
+		{
+			_aliensActive = value;
+		}
+
 	}
 }
 
