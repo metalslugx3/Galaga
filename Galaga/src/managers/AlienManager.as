@@ -151,17 +151,48 @@ package managers
 		
 		public function increaseDifficulty():void
 		{
+			updateEasyEnemies();
+			updateMediumEnemies();
+			updateHardEnemies();
+		}
+		
+		private function updateEasyEnemies():void
+		{
+			_alienEasySpawnRate += 0.001;
+			
+			var a:Alien;
+			for each (a in _poolAlienHard.items)
+			{
+				a.speed += 1;
+			}
+		}
+		
+		private function updateMediumEnemies():void
+		{
 			if (_game.level >= 10)
 			{
 				_alienMediumSpawnRate += .01;
+				
+				var a:Alien;
+				for each (a in _poolAlienEasy.items)
+				{
+					a.speed += 1;
+				}
 			}
-			
+		}
+		
+		private function updateHardEnemies():void
+		{
 			if (_game.level >= 30)
 			{
 				_alienHardSpawnRate += .01;
+				
+				var a:Alien;
+				for each (a in _poolAlienMedium.items)
+				{
+					a.speed += 1;
+				}
 			}
-			
-			_alienEasySpawnRate += 0.001;
 		}
 		
 		private function destroyAlien(a:Alien, i:Number):void
