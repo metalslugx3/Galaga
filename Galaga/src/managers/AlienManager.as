@@ -44,7 +44,7 @@ package managers
 			
 		private function initialize():void
 		{
-			_maxEasyAliens = 1;
+			_maxEasyAliens = 100;
 			_maxMediumAliens = 0;
 			_maxHardAliens = 0;
 			
@@ -195,7 +195,7 @@ package managers
 			}
 		}
 		
-		private function destroyAlien(a:Alien, i:Number):void
+		public function destroyAlien(a:Alien, i:Number):void
 		{
 			if (a.type == 1)
 			{

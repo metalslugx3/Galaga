@@ -75,7 +75,7 @@ package managers
 			_bulletsActive.push(_tempBullet);
 		}
 		
-		private function destroyBullet(b:Bullet, i:Number):void
+		public function destroyBullet(b:Bullet, i:Number):void
 		{
 			_pool.returnSprite(b);
 			b.x = -100;

@@ -81,7 +81,6 @@ package states
 		 */		
 		private function checkDifficulty():void
 		{
-			StarlingView
 			if (getTimer() - _lastTime > _timeToIncreaseDifficulty)
 			{
 				// increase the current level
@@ -96,7 +95,7 @@ package states
 				// increase bg scroll speed slightly
 				_bg.velocity = [0, _bg.velocity[1]+=1];
 				
-				trace(_level);
+				trace("level: " + _level);
 			}
 		}
 		
@@ -284,6 +283,16 @@ package states
 		public function set level(value:int):void
 		{
 			_level = value;
+		}
+
+		public function get isGameOver():Boolean
+		{
+			return _isGameOver;
+		}
+
+		public function set isGameOver(value:Boolean):void
+		{
+			_isGameOver = value;
 		}
 
 

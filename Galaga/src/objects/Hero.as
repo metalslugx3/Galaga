@@ -3,6 +3,7 @@ package objects
 	import core.Assets;
 	
 	import flash.geom.Rectangle;
+	import flash.utils.getTimer;
 	
 	import starling.display.Image;
 	import starling.display.Sprite;
@@ -21,11 +22,26 @@ package objects
 		private var _game:GameState;
 		private var _image1:Image;
 		
+		// if the hero can fire or not
 		private var _canFire:Boolean;
+		
+		// the speed of the hero
 		private var _speed:Number;
 		
-		// how many frames will pass before the player can fire; minimum is 2.
+		// how many lives the hero has; 0 = game over
+		private var _lives:int;
+		
+		// how many frames will pass before the hero can fire; minimum is 2.
 		private var _fireRate:Number;
+		
+		// if the player is currently invincible or not (for respawning)
+		private var _isInvincible:Boolean;
+		
+		// how long the hero is invincible
+		private var _invincibleTime:int;
+		
+		// the time invincibility started
+		private var _invincibleStartTime:int;
 		
 		public function Hero(game:GameState)
 		{
@@ -43,9 +59,10 @@ package objects
 			_canFire = false;
 			_speed = 3;
 			_fireRate = 20;
-			
-			// the area the player is allowed to move
-			
+			_lives = 3;
+			_isInvincible = false;
+			_invincibleTime = 2500;
+			_invincibleStartTime = 0;
 			
 			createArt();
 		}
@@ -64,9 +81,59 @@ package objects
 		
 		public function update(deltaTime:Number):void
 		{
-			// ...
+			if (_isInvincible)
+			{
+				trace(getInvincibleTimer());
+				if (getTimer() - _invincibleStartTime >= _invincibleTime)
+				{
+					_isInvincible = false;
+				}
+			}
 		}
 		
+		/**
+		 *	 Kills the hero.  Subtracts one life.  No more lives = game over.
+		 * 
+		 */		
+		public function destroyHero():void
+		{
+			// subtract 1 life
+			_lives--;
+			
+			if (_lives <= 0)
+			{
+				_game.isGameOver = true;
+			}
+			else
+			{
+				// blink and ressurect
+				this.x = stage.stageWidth * 0.5;
+				this.y = stage.stageHeight - this.height * 0.5;
+				_isInvincible = true;
+				_invincibleStartTime = getTimer();
+			}
+		}
+		
+		/**
+		 *	Gets the invincible timer count down if the player is invincible otherwise 0 is returned.
+		 *  
+		 * @return the invincible timer count down
+		 * 
+		 */		
+		public function getInvincibleTimer():Number
+		{
+			if (!_isInvincible)
+			{
+				return 0;
+			}
+			
+			return (_invincibleTime - (getTimer() - _invincibleStartTime));
+		}
+		
+		/**
+		 *	Primarily used to destroy the whole class. Clean up. 
+		 * 
+		 */		
 		public function destroy():void
 		{
 			_image1.dispose();
@@ -104,6 +171,26 @@ package objects
 		public function set fireRate(value:Number):void
 		{
 			_fireRate = value;
+		}
+
+		public function get lives():int
+		{
+			return _lives;
+		}
+
+		public function set lives(value:int):void
+		{
+			_lives = value;
+		}
+
+		public function get isInvincible():Boolean
+		{
+			return _isInvincible;
+		}
+
+		public function set isInvincible(value:Boolean):void
+		{
+			_isInvincible = value;
 		}
 	}
 }
