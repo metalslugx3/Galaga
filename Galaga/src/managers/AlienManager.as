@@ -21,6 +21,11 @@ package managers
 		private var _maxEasyAliens:uint;
 		private var _maxMediumAliens:uint;
 		private var _maxHardAliens:uint;
+		private var _maxAliensAtOnce:uint;
+		
+		private var _aliensEasyActive:Array;
+		private var _aliensMediumActive:Array;
+		private var _aliensHardActive:Array;
 		
 		private var _poolAlienEasy:StarlingPool;
 		private var _poolAlienMedium:StarlingPool;
@@ -44,15 +49,24 @@ package managers
 			
 		private function initialize():void
 		{
-			_maxEasyAliens = 100;
-			_maxMediumAliens = 0;
-			_maxHardAliens = 0;
+			_maxEasyAliens = 30;
+			_maxMediumAliens = 20;
+			_maxHardAliens = 10;
+			_maxAliensAtOnce = 100;
 			
 			_poolAlienEasy = new StarlingPool(AlienEasy, _maxEasyAliens);
 			_poolAlienMedium = new StarlingPool(AlienMedium, _maxMediumAliens);
 			_poolAlienHard = new StarlingPool(AlienHard, _maxHardAliens);
 			
+			// aliens will have one main active array that holds each individial alien specific active array
 			_aliensActive = [];
+			_aliensEasyActive = [];
+			_aliensMediumActive = [];
+			_aliensHardActive = [];
+			
+			_aliensActive.push(_aliensEasyActive);
+			_aliensActive.push(_aliensMediumActive);
+			_aliensActive.push(_aliensHardActive);
 			
 			// populate each pool with a set amount of enemies
 			var a:Alien;
@@ -77,7 +91,6 @@ package managers
 				_game.addChild(a);
 			}
 			
-			_spawnTimer = 1000;
 			_alienEasySpawnRate = 0.02;
 			_alienMediumSpawnRate = 0;
 			_alienHardSpawnRate = 0;
@@ -101,14 +114,23 @@ package managers
 				spawnAlien(3);
 			}
 			
+			// iterate through the active aliens multi-dimensional array to update movement
 			var a:Alien;
 			var i:int = _aliensActive.length - 1;
 			
 			for (i; i >= 0; i--)
 			{
-				a = _aliensActive[i];
-				a.y += a.speed * deltaTime;
-				checkOffStage(a, i);
+				var lengthOfActive:int = _aliensActive[i].length - 1;
+				var j:int = lengthOfActive;
+				
+				for (j; j >= 0; j--)
+				{
+					a = _aliensActive[i][j];
+					a.y += a.speed * deltaTime;
+					
+					// j should be passed as the index because j is the index of the alien inside the _aliensActive[i] Array
+					checkOffStage(a, j);
+				}
 			}
 		}
 		
@@ -120,33 +142,61 @@ package managers
 			}
 		}
 		
+		/**
+		 *	Determine the type of alien needed to spawn and fetch it from the correct pool then push it into the correct active Array. 
+		 * @param type the type of alien
+		 * 
+		 */		
 		public function spawnAlien(type:int):void
 		{
-			// only this amount of Aliens allowed on-screens; needs to be re-worked
-			if (_aliensActive.length >= _maxEasyAliens)
-			{
-				trace("Cannot create more aliens than allowed.");
-				return;
-			}
-			
+			// if the alien is of type 1
 			if (type == 1)
 			{
-				_tempAlien = _poolAlienEasy.getSprite() as Alien;
+				// in the active array, do not create more of this type if the specific array dedicated to this type is greater than the allowed amount
+				if (_aliensActive[0].length >= _maxEasyAliens)
+				{
+					//trace("Cannot create more easy aliens than allowed.");
+				}
+				else
+				{
+					_tempAlien = _poolAlienEasy.getSprite() as Alien;
+					_aliensActive[0].push(_tempAlien);
+				}
 			}
 			
 			if (type == 2)
 			{
-				_tempAlien = _poolAlienMedium.getSprite() as Alien;
+				if (_aliensActive[1].length >= _maxMediumAliens)
+				{
+					//trace("Cannot create more medium aliens than allowed.");
+				}
+				else
+				{
+					_tempAlien = _poolAlienMedium.getSprite() as Alien;
+					_aliensActive[1].push(_tempAlien);
+				}
 			}
 			
 			if (type == 3)
 			{
-				_tempAlien = _poolAlienHard.getSprite() as Alien;
+				if (_aliensActive[2].length >= _maxHardAliens)
+				{
+					//trace("Cannot create more hard aliens than allowed.");
+				}
+				else
+				{
+					_tempAlien = _poolAlienHard.getSprite() as Alien;
+					_aliensActive[2].push(_tempAlien);
+				}
 			}
 			
-			_tempAlien.x = (Math.random() * (640 - _tempAlien.width)) + _tempAlien.width;
-			_tempAlien.y = 0 - _tempAlien.height * 0.5;
-			_aliensActive.push(_tempAlien);
+			if (_tempAlien)
+			{
+				_tempAlien.x = (Math.random() * (640 - _tempAlien.width)) + _tempAlien.width;
+				_tempAlien.y = 0 - _tempAlien.height * 0.5;
+			}
+			
+			_tempAlien = null;
 		}
 		
 		public function increaseDifficulty():void
@@ -197,22 +247,25 @@ package managers
 		
 		public function destroyAlien(a:Alien, i:Number):void
 		{
+			trace("destroyAlien");
 			if (a.type == 1)
 			{
 				_poolAlienEasy.returnSprite(a);
+				_aliensActive[0].splice(i, 1);
 			}
 			else if (a.type == 2)
 			{
 				_poolAlienMedium.returnSprite(a);
+				_aliensActive[1].splice(i, 1);
 			}
 			else if (a.type == 3)
 			{
 				_poolAlienHard.returnSprite(a);
+				_aliensActive[2].splice(i, 1);
 			}
 			
 			a.x = -100;
 			a.y = -100;
-			_aliensActive.splice(i, 1);
 		}
 		
 		public function destroy():void

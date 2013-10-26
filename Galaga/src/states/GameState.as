@@ -53,7 +53,7 @@ package states
 			_gameBounds = new Rectangle(0, 80, stage.stageWidth, 400);
 			_level = 1;
 			_lastTime = 0;
-			_timeToIncreaseDifficulty = 3000;
+			_timeToIncreaseDifficulty = 500;
 		}
 		
 		override public function update(timeDelta:Number):void

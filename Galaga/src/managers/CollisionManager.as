@@ -35,27 +35,44 @@ package managers
 			
 			var bl:int = _game.bulletManager.bulletsActive.length - 1;
 			var i:int = bl;
+			
+			var activeAliens:Array = _game.alienManager.aliensActive;
+			
 			for (i; i >= 0; i--)
 			{
 				b = _game.bulletManager.bulletsActive[i];
-				var al:int = _game.alienManager.aliensActive.length - 1;
+				
+				// active aliens multi-dimensional Array
+				var al:int = activeAliens.length - 1;
 				var j:int = al;
 				
 				for (j; j >= 0; j--)
 				{
-					a = _game.alienManager.aliensActive[j];
-					
-					if (b.bounds.intersects(a.bounds))
+					// if the length of the specific alien Array is 0 then skip this iteration
+					if (activeAliens[j].length == 0)
 					{
-						trace("bullet hit alien");
+						continue;
+					}
+					
+					// iterate through the current active alien specific Array in aliensActive to find collision
+					var k:int = activeAliens[j].length - 1;
+					for (k; k >= 0; k--)
+					{
+						// the current alien
+						a = activeAliens[j][k];
 						
-						// destroy alien
-						_game.alienManager.destroyAlien(a, j);
-						
-						// destroy bullet
-						_game.bulletManager.destroyBullet(b, i);
-						
-						// spawn explosion
+						if (b.bounds.intersects(a.bounds))
+						{
+							trace("bullet hit alien");
+							
+							// destroy alien
+							_game.alienManager.destroyAlien(a, k);
+							
+							// destroy bullet
+							_game.bulletManager.destroyBullet(b, i);
+							
+							// spawn explosion
+						}
 					}
 				}
 			}
@@ -63,27 +80,39 @@ package managers
 		
 		private function checkHeroAndAliens():void
 		{
-			var hero:Hero;
+			var hero:Hero = _game.hero;
 			var a:Alien;
 			
 			var al:int = _game.alienManager.aliensActive.length - 1;
 			var j:int = al;
+			
+			var activeAliens:Array = _game.alienManager.aliensActive;
+			
 			for (j; j >= 0; j--)
 			{
-				hero = _game.hero;
-				a = _game.alienManager.aliensActive[j];
-				
-				if (!hero.isInvincible && hero.bounds.intersects(a.bounds))
+				// if the length of the specific alien Array is 0 then skip this iteration
+				if (activeAliens[j].length == 0)
 				{
-					trace("hero dead");
+					continue;
+				}
+				
+				var k:int = activeAliens[j].length - 1;
+				for (k; k >= 0; k--)
+				{
+					a = activeAliens[j][k];
 					
-					// destroy alien
-					_game.alienManager.destroyAlien(a, j);
-					
-					// destroy hero
-					hero.destroyHero();
-					
-					// spawn explosion
+					if (!hero.isInvincible && hero.bounds.intersects(a.bounds))
+					{
+						trace("hero dead");
+						
+						// destroy alien
+						_game.alienManager.destroyAlien(a, k);
+						
+						// destroy hero
+						hero.destroyHero();
+						
+						// spawn explosion
+					}
 				}
 			}
 		}
