@@ -23,6 +23,8 @@ package objects
 		
 		private var _canFire:Boolean;
 		private var _speed:Number;
+		
+		// how many frames will pass before the player can fire; minimum is 2.
 		private var _fireRate:Number;
 		
 		public function Hero(game:GameState)
@@ -40,7 +42,7 @@ package objects
 			
 			_canFire = false;
 			_speed = 3;
-			_fireRate = 20;
+			_fireRate = 30;
 			
 			// the area the player is allowed to move
 			
