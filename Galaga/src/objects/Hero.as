@@ -42,7 +42,7 @@ package objects
 			
 			_canFire = false;
 			_speed = 3;
-			_fireRate = 40;
+			_fireRate = 20;
 			
 			// the area the player is allowed to move
 			

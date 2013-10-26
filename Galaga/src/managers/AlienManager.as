@@ -1,6 +1,10 @@
 package managers
 {
+	import citrus.core.CitrusEngine;
+	
 	import com.leebrimelow.starling.StarlingPool;
+	
+	import flash.utils.getTimer;
 	
 	import objects.Alien;
 	import objects.AlienEasy;
@@ -14,6 +18,10 @@ package managers
 		private var _game:GameState;
 		
 		private var _maxAliens:uint;
+		private var _maxEasyAliens:uint;
+		private var _maxMediumAliens:uint;
+		private var _maxHardAliens:uint;
+		
 		private var _poolAlienEasy:StarlingPool;
 		private var _poolAlienMedium:StarlingPool;
 		private var _poolAlienHard:StarlingPool;
@@ -22,7 +30,9 @@ package managers
 		
 		private var _spawnTimer:uint;
 		private var _lastSpawn:uint;
-		private var _spawnRate:Number;
+		private var _alienEasySpawnRate:Number;
+		private var _alienMediumSpawnRate:Number;
+		private var _alienHardSpawnRate:Number;
 		private var _spawnWave:int;
 		
 		public function AlienManager(game:GameState)
@@ -34,11 +44,13 @@ package managers
 			
 		private function initialize():void
 		{
-			_maxAliens = 30;
+			_maxEasyAliens = 30;
+			_maxMediumAliens = 30;
+			_maxHardAliens = 30;
 			
-			_poolAlienEasy = new StarlingPool(AlienEasy, _maxAliens);
-			_poolAlienMedium = new StarlingPool(AlienMedium, _maxAliens);
-			_poolAlienHard = new StarlingPool(AlienHard, _maxAliens);
+			_poolAlienEasy = new StarlingPool(AlienEasy, _maxEasyAliens);
+			_poolAlienMedium = new StarlingPool(AlienMedium, _maxMediumAliens);
+			_poolAlienHard = new StarlingPool(AlienHard, _maxHardAliens);
 			
 			_aliensActive = [];
 			
@@ -66,14 +78,27 @@ package managers
 			}
 			
 			_spawnTimer = 1000;
-			_spawnRate = 0.02;
+			_alienEasySpawnRate = 0.02;
+			_alienMediumSpawnRate = 0;
+			_alienHardSpawnRate = 0;
 		}
 		
 		public function update(deltaTime:Number):void
 		{
-			if (Math.random() < _spawnRate)
+			// spawn an alien based off spawn rate
+			if (Math.random() < _alienEasySpawnRate)
 			{
-				spawnAlien();
+				spawnAlien(1);
+			}
+			
+			if (Math.random() < _alienMediumSpawnRate)
+			{
+				spawnAlien(2);
+			}
+			
+			if (Math.random() < _alienHardSpawnRate)
+			{
+				spawnAlien(3);
 			}
 			
 			var a:Alien;
@@ -95,26 +120,26 @@ package managers
 			}
 		}
 		
-		public function spawnAlien():void
+		public function spawnAlien(type:int):void
 		{
-			if (_aliensActive.length > _maxAliens)
+			// only this amount of Aliens allowed on-screens; needs to be re-worked
+			if (_aliensActive.length > _maxEasyAliens)
 			{
 				trace("Cannot create more aliens that is allowed.");
 				return;
 			}
 			
-			// simple check to spawn random enemies
-			var randomSpawn:Number = Math.random();
-			
-			if (randomSpawn <= 0.5)
+			if (type == 1)
 			{
 				_tempAlien = _poolAlienEasy.getSprite() as Alien;
 			}
-			else if (randomSpawn > 0.5 && randomSpawn <= 0.8)
+			
+			if (type == 2)
 			{
 				_tempAlien = _poolAlienMedium.getSprite() as Alien;
 			}
-			else if (randomSpawn > 0.8 && randomSpawn <= 1)
+			
+			if (type == 3)
 			{
 				_tempAlien = _poolAlienHard.getSprite() as Alien;
 			}
@@ -124,9 +149,36 @@ package managers
 			_aliensActive.push(_tempAlien);
 		}
 		
+		public function increaseDifficulty():void
+		{
+			if (_game.level >= 10)
+			{
+				_alienMediumSpawnRate += .01;
+			}
+			
+			if (_game.level >= 30)
+			{
+				_alienHardSpawnRate += .01;
+			}
+			
+			_alienEasySpawnRate += 0.001;
+		}
+		
 		private function destroyAlien(a:Alien, i:Number):void
 		{
-			_poolAlienEasy.returnSprite(a);
+			if (a.type == 1)
+			{
+				_poolAlienEasy.returnSprite(a);
+			}
+			else if (a.type == 2)
+			{
+				_poolAlienMedium.returnSprite(a);
+			}
+			else if (a.type == 3)
+			{
+				_poolAlienHard.returnSprite(a);
+			}
+			
 			a.x = -100;
 			a.y = -100;
 			_aliensActive.splice(i, 1);

@@ -4,6 +4,7 @@ package states
 	import citrus.input.controllers.Keyboard;
 	
 	import flash.geom.Rectangle;
+	import flash.utils.getTimer;
 	
 	import managers.AlienManager;
 	import managers.BulletManager;
@@ -24,6 +25,8 @@ package states
 		
 		private var _gameBounds:Rectangle;
 		private var _level:int;
+		private var _timeToIncreaseDifficulty:int;
+		private var _lastTime:Number;
 		
 		public function GameState()
 		{
@@ -48,6 +51,8 @@ package states
 			
 			_gameBounds = new Rectangle(0, 80, stage.stageWidth, 400);
 			_level = 1;
+			_lastTime = 0;
+			_timeToIncreaseDifficulty = 3000;
 		}
 		
 		override public function update(timeDelta:Number):void
@@ -56,6 +61,7 @@ package states
 			
 			if (!_isGameOver)
 			{
+				checkDifficulty();
 				updateHero(timeDelta);
 				updateManagers(timeDelta);
 			}
@@ -65,6 +71,21 @@ package states
 				
 				// go to the GameOverState
 				_ce.state = new GameOverState();
+			}
+		}
+		
+		/**
+		 *Increase game difficulty every few seconds. 
+		 * 
+		 */		
+		private function checkDifficulty():void
+		{
+			if (getTimer() - _lastTime > _timeToIncreaseDifficulty)
+			{
+				_level++;
+				trace(_level);
+				_lastTime = getTimer();
+				_alienManager.increaseDifficulty();
 			}
 		}
 		
@@ -241,6 +262,17 @@ package states
 		{
 			_hero = value;
 		}
+
+		public function get level():int
+		{
+			return _level;
+		}
+
+		public function set level(value:int):void
+		{
+			_level = value;
+		}
+
 
 	}
 }
