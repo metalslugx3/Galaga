@@ -15,6 +15,8 @@ package states
 	import objects.Background;
 	import objects.Hero;
 	
+	import starling.events.KeyboardEvent;
+	
 	public class GameState extends StarlingState
 	{
 		private var _bg:Background;
@@ -76,7 +78,7 @@ package states
 			// check movement keys
 			if (_ce.input.isDoing(Hero.KB_LEFT))
 			{
-				trace("left");
+				//trace("left");
 				_hero.x -= _hero.speed;
 			}
 			else if (_ce.input.isDoing(Hero.KB_RIGHT))
@@ -84,9 +86,10 @@ package states
 				_hero.x += _hero.speed;
 			}
 			
+			
 			if (_ce.input.isDoing(Hero.KB_UP))
 			{
-				trace("up");
+				//trace("up");
 				_hero.y -= _hero.speed;
 			}
 			else if (_ce.input.isDoing(Hero.KB_DOWN))
@@ -94,12 +97,13 @@ package states
 				_hero.y += _hero.speed;
 			}
 			
-			// ensure the player stays within the game bounds
-			checkGameBounds();
+			
+				
 			
 			// check fire key
-			if (_ce.input.isDoing(Hero.KB_FIRE))
+			if (_ce.input.isDoing((Hero.KB_FIRE)))
 			{
+				_hero.fire();
 				// allow the player to fire at least once by checking if time (frames passed on key press) is equal to 2
 				// additional firing will be delayed the _fireRate in hero
 				if (_ce.input.isDoing(Hero.KB_FIRE).time == 2 || _ce.input.isDoing(Hero.KB_FIRE).time % _hero.fireRate == 0)
@@ -107,6 +111,10 @@ package states
 					_hero.fire();
 				}
 			}
+			
+			
+			// ensure the player stays within the game bounds
+			checkGameBounds();
 		}
 		
 		/**
@@ -159,14 +167,13 @@ package states
 		
 		private function createManagers():void
 		{
-			// TODO Auto Generated method stub
 			_bulletManager = new BulletManager(this);
 		}
 		
 		private function createKeyInputs():void
 		{
 			// create new keyactions here
-			_ce.input.keyboard.addKeyAction(Hero.KB_FIRE, Keyboard.SPACE);
+			_ce.input.keyboard.addKeyAction(Hero.KB_FIRE, Keyboard.CTRL, 0);
 		}
 
 		/**

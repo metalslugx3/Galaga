@@ -62,7 +62,7 @@ package managers
 		
 		public function spawnBullet():void
 		{
-			if (_bulletsActive.length > _maxBullets)
+			if (_bulletsActive.length >= _maxBullets)
 			{
 				trace("Cannot create more bullets that is allowed.");
 				return;
