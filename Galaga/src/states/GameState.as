@@ -1,10 +1,7 @@
 package states
 {
 	import citrus.core.starling.StarlingState;
-	import citrus.input.InputAction;
-	import citrus.input.InputController;
 	import citrus.input.controllers.Keyboard;
-	import citrus.view.starlingview.StarlingView;
 	
 	import flash.geom.Rectangle;
 	
@@ -14,8 +11,6 @@ package states
 	
 	import objects.Background;
 	import objects.Hero;
-	
-	import starling.events.KeyboardEvent;
 	
 	public class GameState extends StarlingState
 	{
@@ -28,6 +23,7 @@ package states
 		private var _collisionManager:CollisionManager;
 		
 		private var _gameBounds:Rectangle;
+		private var _level:int;
 		
 		public function GameState()
 		{
@@ -51,6 +47,7 @@ package states
 			createKeyInputs();
 			
 			_gameBounds = new Rectangle(0, 80, stage.stageWidth, 400);
+			_level = 1;
 		}
 		
 		override public function update(timeDelta:Number):void
@@ -98,12 +95,9 @@ package states
 			}
 			
 			
-				
-			
 			// check fire key
 			if (_ce.input.isDoing((Hero.KB_FIRE)))
 			{
-				_hero.fire();
 				// allow the player to fire at least once by checking if time (frames passed on key press) is equal to 2
 				// additional firing will be delayed the _fireRate in hero
 				if (_ce.input.isDoing(Hero.KB_FIRE).time == 2 || _ce.input.isDoing(Hero.KB_FIRE).time % _hero.fireRate == 0)
@@ -149,6 +143,7 @@ package states
 		private function updateManagers(deltaTime:Number):void
 		{
 			_bulletManager.update(deltaTime);
+			_alienManager.update(deltaTime);
 		}
 		
 		private function createBackground():void
@@ -168,6 +163,7 @@ package states
 		private function createManagers():void
 		{
 			_bulletManager = new BulletManager(this);
+			_alienManager = new AlienManager(this);
 		}
 		
 		private function createKeyInputs():void

@@ -8,51 +8,31 @@ package objects
 	
 	public class Alien extends Sprite
 	{
-		private var _alienImage:Image;
-		private var _type:uint;
-		private var _speed:int;
-		private var _fireRate:int;
+		protected var _alienImage:Image;
+		protected var _type:uint;
+		protected var _speed:int;
+		protected var _fireRate:int;
 		
-		public function Alien(type:uint)
+		public function Alien()
 		{
 			super();
-			
-			_type = type;
 			
 			this.addEventListener(Event.ADDED_TO_STAGE, initialize);
 		}
 		
-		private function initialize(e:Event):void
+		protected function initialize(e:Event):void
 		{
 			this.removeEventListener(Event.ADDED_TO_STAGE, initialize);
-			
-			_speed = 250;
-			_fireRate = 10;
 			
 			createArt();
 		}
 		
-		private function createArt():void
+		protected function createArt():void
 		{
-			// the type of alien this class will be
-			switch (_type)
-			{
-				case 1:
-					_alienImage = new Image(Assets.textureAtlas.getTexture("enemyship1-final instance 10000");
-					break;
-				case 2:
-					_alienImage = new Image(Assets.textureAtlas.getTexture("enemyship2-final instance 10000");
-					break;
-				case 3:
-					_alienImage = new Image(Assets.textureAtlas.getTexture("enemyship3-final instance 10000");
-					break;
-			}
-			
-			this.addChild(_alienImage);
-			_alienImage.alignPivot("center", "center");
+			// create your art here
 		}
 		
-		public function update(deltaTime):void
+		public function update(deltaTime:Number):void
 		{
 			
 		}
@@ -63,6 +43,38 @@ package objects
 			_alienImage.dispose();
 			_alienImage = null;
 		}
+
+		public function get type():uint
+		{
+			return _type;
+		}
+
+		public function set type(value:uint):void
+		{
+			_type = value;
+		}
+
+		public function get speed():int
+		{
+			return _speed;
+		}
+
+		public function set speed(value:int):void
+		{
+			_speed = value;
+		}
+
+		public function get fireRate():int
+		{
+			return _fireRate;
+		}
+
+		public function set fireRate(value:int):void
+		{
+			_fireRate = value;
+		}
+
+
 	}
 }
 

@@ -2,7 +2,10 @@ package managers
 {
 	import com.leebrimelow.starling.StarlingPool;
 	
-	import objects.Bullet;
+	import objects.Alien;
+	import objects.AlienEasy;
+	import objects.AlienHard;
+	import objects.AlienMedium;
 	
 	import states.GameState;
 	
@@ -10,10 +13,17 @@ package managers
 	{
 		private var _game:GameState;
 		
-		private var _maxBullets:uint;
-		private var _pool:StarlingPool;
-		private var _bulletsActive:Array;
-		private var _tempBullet:Bullet;
+		private var _maxAliens:uint;
+		private var _poolAlienEasy:StarlingPool;
+		private var _poolAlienMedium:StarlingPool;
+		private var _poolAlienHard:StarlingPool;
+		private var _aliensActive:Array;
+		private var _tempAlien:Alien;
+		
+		private var _spawnTimer:uint;
+		private var _lastSpawn:uint;
+		private var _spawnRate:Number;
+		private var _spawnWave:int;
 		
 		public function AlienManager(game:GameState)
 		{
@@ -21,89 +31,130 @@ package managers
 			
 			initialize();
 		}
-		
+			
 		private function initialize():void
 		{
-			_maxBullets = 30;
+			_maxAliens = 30;
 			
-			_pool = new StarlingPool(Bullet, _maxBullets);
+			_poolAlienEasy = new StarlingPool(AlienEasy, _maxAliens);
+			_poolAlienMedium = new StarlingPool(AlienMedium, _maxAliens);
+			_poolAlienHard = new StarlingPool(AlienHard, _maxAliens);
 			
-			_bulletsActive = [];
+			_aliensActive = [];
 			
-			var b:Bullet;
-			for each (b in _pool.items)
+			// populate each pool with a set amount of enemies
+			var a:Alien;
+			for each (a in _poolAlienEasy.items)
 			{
-				b.x = -100;
-				b.y = -100;
-				_game.addChild(b);
+				a.x = -100;
+				a.y = -100;
+				_game.addChild(a);
 			}
+			
+			for each (a in _poolAlienMedium.items)
+			{
+				a.x = -100;
+				a.y = -100;
+				_game.addChild(a);
+			}
+			
+			for each (a in _poolAlienHard.items)
+			{
+				a.x = -100;
+				a.y = -100;
+				_game.addChild(a);
+			}
+			
+			_spawnTimer = 1000;
+			_spawnRate = 0.02;
 		}
 		
 		public function update(deltaTime:Number):void
 		{
-			var b:Bullet;
-			var i:int = _bulletsActive.length - 1;
+			if (Math.random() < _spawnRate)
+			{
+				spawnAlien();
+			}
+			
+			var a:Alien;
+			var i:int = _aliensActive.length - 1;
 			
 			for (i; i >= 0; i--)
 			{
-				b = _bulletsActive[i];
-				b.y -= b.speed * deltaTime;
-				checkOffStage(b, i);
+				a = _aliensActive[i];
+				a.y += a.speed * deltaTime;
+				checkOffStage(a, i);
 			}
 		}
 		
-		private function checkOffStage(b:Bullet, i:int):void
+		private function checkOffStage(a:Alien, i:int):void
 		{
-			if (b.y - b.height * 0.5 <= 0)
+			if (a.y + a.height * 0.5 >= 640)
 			{
-				destroyBullet(b, i);	
+				destroyAlien(a, i);
 			}
 		}
 		
-		public function spawnBullet():void
+		public function spawnAlien():void
 		{
-			if (_bulletsActive.length > _maxBullets)
+			if (_aliensActive.length > _maxAliens)
 			{
-				trace("Cannot create more bullets that is allowed.");
+				trace("Cannot create more aliens that is allowed.");
 				return;
 			}
 			
-			_tempBullet = _pool.getSprite() as Bullet;
-			_tempBullet.x = _game.hero.x;
-			_tempBullet.y = (_game.hero.y - _game.hero.height * 0.5) - _tempBullet.height;
+			// simple check to spawn random enemies
+			var randomSpawn:Number = Math.random();
 			
-			_bulletsActive.push(_tempBullet);
+			if (randomSpawn <= 0.5)
+			{
+				_tempAlien = _poolAlienEasy.getSprite() as Alien;
+			}
+			else if (randomSpawn > 0.5 && randomSpawn <= 0.8)
+			{
+				_tempAlien = _poolAlienMedium.getSprite() as Alien;
+			}
+			else if (randomSpawn > 0.8 && randomSpawn <= 1)
+			{
+				_tempAlien = _poolAlienHard.getSprite() as Alien;
+			}
+			
+			_tempAlien.x = (Math.random() * (640 - _tempAlien.width)) + _tempAlien.width;
+			_tempAlien.y = 0 - _tempAlien.height * 0.5;
+			_aliensActive.push(_tempAlien);
 		}
 		
-		private function destroyBullet(b:Bullet, i:Number):void
+		private function destroyAlien(a:Alien, i:Number):void
 		{
-			_pool.returnSprite(b);
-			b.x = -100;
-			b.y = -100;
-			_bulletsActive.splice(i, 1);
+			_poolAlienEasy.returnSprite(a);
+			a.x = -100;
+			a.y = -100;
+			_aliensActive.splice(i, 1);
 		}
 		
 		public function destroy():void
 		{
-			// remove reference to temp bullet
-			_tempBullet = null;
+			// remove reference to temp alien
+			_tempAlien = null;
 			
-			// remove the bullets added to the GameState, call destroy, call dispose, splice from Array, remove references
-			var b:Bullet;
-			var i:int = _bulletsActive.length - 1;
+			// remove the aliens added to the GameState, call destroy, call dispose, splice from Array, remove references
+			var a:Alien;
+			var i:int = _aliensActive.length - 1;
 			for (i; i >= 0; i--)
 			{
-				b = _bulletsActive[i];
-				b.destroy();
-				b.dispose();
-				_game.removeChild(b);
-				_bulletsActive.splice(i, 1);
+				a = _aliensActive[i];
+				a.destroy();
+				a.dispose();
+				_game.removeChild(a);
+				_aliensActive.splice(i, 1);
 			}
-			b = null;
-			_bulletsActive = null;
+			a = null;
+			_aliensActive = null;
 			
 			// destroy the pool
-			_pool.destroy();
+			_poolAlienEasy.destroy();
+			_poolAlienMedium.destroy();
+			_poolAlienHard.destroy();
 			
 			// remove reference to _game
 			_game = null;
