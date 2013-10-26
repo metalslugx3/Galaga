@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://texturepacker.com-->
-<!-- $TexturePacker:SmartUpdate:e248955ed5da2fdd1cb79c931c3a79f1$ -->
+<!-- $TexturePacker:SmartUpdate:8f14ce30a3572511d903d914c0c6c4d9$ -->
 <TextureAtlas imagePath="atlas.png">
-    <SubTexture name="options" x="195" y="2" width="57" height="18"/>
-    <SubTexture name="score" x="195" y="22" width="50" height="17"/>
-    <SubTexture name="start" x="147" y="2" width="46" height="19" frameX="-2" frameY="0" frameWidth="48" frameHeight="19"/>
-    <SubTexture name="title" x="2" y="2" width="143" height="46" frameX="0" frameY="0" frameWidth="145" frameHeight="46"/>
+    <SubTexture name="gameover_01" x="2" y="2" width="226" height="143" frameX="0" frameY="0" frameWidth="226" frameHeight="145"/>
+    <SubTexture name="options" x="2" y="216" width="57" height="18"/>
+    <SubTexture name="score" x="2" y="236" width="50" height="17"/>
+    <SubTexture name="start" x="2" y="195" width="46" height="19" frameX="-2" frameY="0" frameWidth="48" frameHeight="19"/>
+    <SubTexture name="title" x="2" y="147" width="143" height="46" frameX="0" frameY="0" frameWidth="145" frameHeight="46"/>
 </TextureAtlas>

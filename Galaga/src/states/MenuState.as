@@ -66,7 +66,7 @@ package states
 		{
 			_optionsBtn = new Button(Assets.textureAtlas.getTexture("options"));
 			_optionsBtn.x = _ce.stage.stageWidth * 0.5 - _optionsBtn.width * 0.5;
-			_optionsBtn.y = 200;
+			_optionsBtn.y = _startBtn.y + 50;
 			_optionsBtn.addEventListener(Event.TRIGGERED, buttonTriggered);
 			this.addChild(_optionsBtn);
 		}
@@ -78,7 +78,7 @@ package states
 		{	
 			_startBtn = new Button(Assets.textureAtlas.getTexture("start"));
 			_startBtn.x = _ce.stage.stageWidth * 0.5 - _startBtn.width * 0.5;
-			_startBtn.y = 150;
+			_startBtn.y = _titleCS.y + 50;
 			_startBtn.addEventListener(Event.TRIGGERED, buttonTriggered);
 			this.addChild(_startBtn);
 		}
@@ -88,7 +88,7 @@ package states
 		 * */
 		private function createTitle():void
 		{
-			_titleCS = new CitrusSprite("title", {x:_ce.stage.stageWidth * 0.5,y:100,width:0,height:0});
+			_titleCS = new CitrusSprite("title", {x:_ce.stage.stageWidth * 0.5,y:150,width:0,height:0});
 			_titleCS.registration = "center";
 			_titleCS.view = Assets.textureAtlas.getTexture("title");
 			this.add(_titleCS);

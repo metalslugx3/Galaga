@@ -20,7 +20,6 @@ package states
 		private var _bg:Background;
 		private var _hero:Hero;
 		private var _isGameOver:Boolean;
-		private var _keyboard:Keyboard;
 		
 		private var _bulletManager:BulletManager;
 		private var _alienManager:AlienManager;
@@ -77,20 +76,20 @@ package states
 			// check movement keys
 			if (_ce.input.isDoing(Hero.KB_LEFT))
 			{
+				trace("left");
 				_hero.x -= _hero.speed;
 			}
-			
-			if (_ce.input.isDoing(Hero.KB_RIGHT))
+			else if (_ce.input.isDoing(Hero.KB_RIGHT))
 			{
 				_hero.x += _hero.speed;
 			}
 			
 			if (_ce.input.isDoing(Hero.KB_UP))
 			{
+				trace("up");
 				_hero.y -= _hero.speed;
 			}
-			
-			if (_ce.input.isDoing(Hero.KB_DOWN))
+			else if (_ce.input.isDoing(Hero.KB_DOWN))
 			{
 				_hero.y += _hero.speed;
 			}
@@ -166,15 +165,8 @@ package states
 		
 		private function createKeyInputs():void
 		{
-			// create a new keyboard
-			_keyboard = new Keyboard("keyboard");
-			
 			// create new keyactions here
-			_keyboard.addKeyAction(Hero.KB_FIRE, Keyboard.SPACE);
-			_keyboard.addKeyAction(Hero.KB_LEFT, Keyboard.LEFT);
-			_keyboard.addKeyAction(Hero.KB_RIGHT, Keyboard.RIGHT);
-			_keyboard.addKeyAction(Hero.KB_UP, Keyboard.UP);
-			_keyboard.addKeyAction(Hero.KB_DOWN, Keyboard.DOWN);
+			_ce.input.keyboard.addKeyAction(Hero.KB_FIRE, Keyboard.SPACE);
 		}
 
 		/**
