@@ -5,9 +5,11 @@ package objects
 	import flash.geom.Rectangle;
 	import flash.utils.getTimer;
 	
+	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Event;
+	import starling.extensions.particles.PDParticleSystem;
 	
 	import states.GameState;
 	
@@ -43,6 +45,9 @@ package objects
 		// the time invincibility started
 		private var _invincibleStartTime:int;
 		
+		// the hero's exhaust particle system
+		private var _exhaustPS:PDParticleSystem;
+		
 		public function Hero(game:GameState)
 		{
 			super();
@@ -65,6 +70,19 @@ package objects
 			_invincibleStartTime = 0;
 			
 			createArt();
+			createExhaustPS();
+		}
+		
+		private function createExhaustPS():void
+		{
+			_exhaustPS = new PDParticleSystem(XML(new Assets.XMLSmokeParticle()), Assets.textureAtlas.getTexture("smoke"));
+			_exhaustPS.alignPivot("center", "center");
+			_game.addChild(_exhaustPS);
+			//_exhaustPS.scaleX = _exhaustPS.scaleY = 0.4;
+			//_exhaustPS.x = this.x;
+			//_exhaustPS.y = this.y;
+			_exhaustPS.start();
+			Starling.juggler.add(_exhaustPS);
 		}
 		
 		private function createArt():void
@@ -81,6 +99,7 @@ package objects
 		
 		public function update(deltaTime:Number):void
 		{
+			// check if the player is invincible to begin the invincible timer
 			if (_isInvincible)
 			{
 				trace(getInvincibleTimer());
@@ -89,6 +108,10 @@ package objects
 					_isInvincible = false;
 				}
 			}
+			
+			// update the exhaust particle system to give it realistic motion
+			_exhaustPS.emitterX = this.x;
+			_exhaustPS.emitterY = this.y + 25;
 		}
 		
 		/**
@@ -136,6 +159,13 @@ package objects
 		 */		
 		public function destroy():void
 		{
+			// destroy exhaust particle system
+			_game.removeChild(_exhaustPS);
+			_exhaustPS.stop(true);
+			Starling.juggler.remove(_exhaustPS);
+			_exhaustPS.dispose();
+			
+			// destroy hero image
 			_image1.dispose();
 			this.removeChild(_image1);
 			_image1 = null;

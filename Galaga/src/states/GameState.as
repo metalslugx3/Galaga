@@ -10,6 +10,7 @@ package states
 	import managers.AlienManager;
 	import managers.BulletManager;
 	import managers.CollisionManager;
+	import managers.ExplosionManager;
 	
 	import objects.Background;
 	import objects.Hero;
@@ -23,6 +24,7 @@ package states
 		private var _bulletManager:BulletManager;
 		private var _alienManager:AlienManager;
 		private var _collisionManager:CollisionManager;
+		private var _explosionManager:ExplosionManager;
 		
 		private var _gameBounds:Rectangle;
 		private var _level:int;
@@ -171,11 +173,13 @@ package states
 		/**
 		 * Update all managers with deltaTime.
 		 * */
+		// TODO: deltatime should be a local var
 		private function updateManagers(deltaTime:Number):void
 		{
 			_bulletManager.update(deltaTime);
 			_alienManager.update(deltaTime);
 			_collisionManager.update(deltaTime);
+			_explosionManager.update(deltaTime);
 		}
 		
 		private function createBackground():void
@@ -197,6 +201,7 @@ package states
 			_bulletManager = new BulletManager(this);
 			_alienManager = new AlienManager(this);
 			_collisionManager = new CollisionManager(this);
+			_explosionManager = new ExplosionManager(this);
 		}
 		
 		private function createKeyInputs():void
@@ -293,6 +298,16 @@ package states
 		public function set isGameOver(value:Boolean):void
 		{
 			_isGameOver = value;
+		}
+
+		public function get explosionManager():ExplosionManager
+		{
+			return _explosionManager;
+		}
+
+		public function set explosionManager(value:ExplosionManager):void
+		{
+			_explosionManager = value;
 		}
 
 

@@ -26,6 +26,12 @@ package core
 		[Embed(source="../assets/images/spaceship.xml", mimeType="application/octet-stream")]	// space ship atlas's XML data
 		public static const XMLTextureAtlasSpaceShip:Class;
 		
+		[Embed(source="../assets/images/particles/smoke.pex", mimeType="application/octet-stream")]
+		public static const XMLSmokeParticle:Class;
+		
+		[Embed(source="../assets/images/particles/explosion.pex", mimeType="application/octet-stream")]
+		public static const XMLExplosionParticle:Class;
+		
 		/**
 		 * Texture Atlas.
 		 * */

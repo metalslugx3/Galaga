@@ -25,7 +25,7 @@ package managers
 		public function update(deltaTime:Number):void
 		{
 			checkBulletsAndAliens();
-			checkHeroAndAliens();
+			//checkHeroAndAliens();
 		}
 		
 		private function checkBulletsAndAliens():void
@@ -65,13 +65,15 @@ package managers
 						{
 							trace("bullet hit alien");
 							
+							// spawn explosion
+							trace(a.x, a.y);
+							_game.explosionManager.createExplosion(a.x, a.y);
+							
 							// destroy alien
 							_game.alienManager.destroyAlien(a, k);
 							
 							// destroy bullet
 							_game.bulletManager.destroyBullet(b, i);
-							
-							// spawn explosion
 						}
 					}
 				}
