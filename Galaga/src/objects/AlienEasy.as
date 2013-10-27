@@ -19,6 +19,7 @@ package objects
 			_type = 1;
 			_speed = 75;
 			_fireRate = 0;
+			_pointsWorth = 10;
 		}
 		
 		override protected function createArt():void

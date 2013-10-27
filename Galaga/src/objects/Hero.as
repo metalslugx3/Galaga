@@ -94,7 +94,7 @@ package objects
 		
 		public function fire():void
 		{
-			_game.bulletManager.spawnBullet();
+			_game.bulletManager.spawnProjectile();
 		}
 		
 		public function update(deltaTime:Number):void

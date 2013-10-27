@@ -2,7 +2,7 @@ package managers
 {
 	import com.leebrimelow.starling.StarlingPool;
 	
-	import objects.Bullet;
+	import objects.HeroProjectile;
 	
 	import states.GameState;
 
@@ -10,10 +10,10 @@ package managers
 	{
 		private var _game:GameState;
 		
-		private var _maxBullets:uint;
+		private var _maxProjectiles:uint;
 		private var _pool:StarlingPool;
 		private var _bulletsActive:Array;
-		private var _tempBullet:Bullet;
+		private var _tempBullet:HeroProjectile;
 		
 		public function BulletManager(game:GameState)
 		{
@@ -24,13 +24,13 @@ package managers
 		
 		private function initialize():void
 		{
-			_maxBullets = 30;
+			_maxProjectiles = 30;
 			
-			_pool = new StarlingPool(Bullet, _maxBullets);
+			_pool = new StarlingPool(HeroProjectile, _maxProjectiles);
 			
 			_bulletsActive = [];
 			
-			var b:Bullet;
+			var b:HeroProjectile;
 			for each (b in _pool.items)
 			{
 				b.x = -100;
@@ -41,7 +41,7 @@ package managers
 		
 		public function update(deltaTime:Number):void
 		{
-			var b:Bullet;
+			var b:HeroProjectile;
 			var i:int = _bulletsActive.length - 1;
 			
 			for (i; i >= 0; i--)
@@ -52,7 +52,7 @@ package managers
 			}
 		}
 		
-		private function checkOffStage(b:Bullet, i:int):void
+		private function checkOffStage(b:HeroProjectile, i:int):void
 		{
 			if (b.y - b.height * 0.5 <= 0)
 			{
@@ -60,22 +60,22 @@ package managers
 			}
 		}
 		
-		public function spawnBullet():void
+		public function spawnProjectile():void
 		{
-			if (_bulletsActive.length >= _maxBullets)
+			if (_bulletsActive.length >= _maxProjectiles)
 			{
-				trace("Cannot create more bullets that is allowed.");
+				trace("Cannot create more projectiles that is allowed.");
 				return;
 			}
 			
-			_tempBullet = _pool.getSprite() as Bullet;
+			_tempBullet = _pool.getSprite() as HeroProjectile;
 			_tempBullet.x = _game.hero.x;
 			_tempBullet.y = (_game.hero.y - _game.hero.height * 0.5) - _tempBullet.height;
 			
 			_bulletsActive.push(_tempBullet);
 		}
 		
-		public function destroyBullet(b:Bullet, i:Number):void
+		public function destroyBullet(b:HeroProjectile, i:Number):void
 		{
 			_pool.returnSprite(b);
 			b.x = -100;
@@ -89,7 +89,7 @@ package managers
 			_tempBullet = null;
 			
 			// remove the bullets added to the GameState, call destroy, call dispose, splice from Array, remove references
-			var b:Bullet;
+			var b:HeroProjectile;
 			var i:int = _bulletsActive.length - 1;
 			for (i; i >= 0; i--)
 			{
@@ -118,7 +118,6 @@ package managers
 		{
 			_bulletsActive = value;
 		}
-
 	}
 }
 

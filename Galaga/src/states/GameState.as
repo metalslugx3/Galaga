@@ -8,6 +8,7 @@ package states
 	import flash.utils.getTimer;
 	
 	import managers.AlienManager;
+	import managers.AlienProjectileManager;
 	import managers.BulletManager;
 	import managers.CollisionManager;
 	import managers.ExplosionManager;
@@ -25,6 +26,7 @@ package states
 		private var _alienManager:AlienManager;
 		private var _collisionManager:CollisionManager;
 		private var _explosionManager:ExplosionManager;
+		private var _alienProjectileManager:AlienProjectileManager;
 		
 		private var _gameBounds:Rectangle;
 		private var _level:int;
@@ -52,7 +54,7 @@ package states
 			createManagers();
 			createKeyInputs();
 			
-			_gameBounds = new Rectangle(0, 80, stage.stageWidth, 400);
+			_gameBounds = new Rectangle(0, 0, stage.stageWidth, stage.stageHeight);
 			_level = 1;
 			_lastTime = 0;
 			_timeToIncreaseDifficulty = 500;
@@ -180,6 +182,7 @@ package states
 			_alienManager.update(deltaTime);
 			_collisionManager.update(deltaTime);
 			_explosionManager.update(deltaTime);
+			_alienProjectileManager.update(deltaTime);
 		}
 		
 		private function createBackground():void
@@ -202,6 +205,7 @@ package states
 			_alienManager = new AlienManager(this);
 			_collisionManager = new CollisionManager(this);
 			_explosionManager = new ExplosionManager(this);
+			_alienProjectileManager = new AlienProjectileManager(this);
 		}
 		
 		private function createKeyInputs():void
@@ -308,6 +312,16 @@ package states
 		public function set explosionManager(value:ExplosionManager):void
 		{
 			_explosionManager = value;
+		}
+
+		public function get alienProjectileManager():AlienProjectileManager
+		{
+			return _alienProjectileManager;
+		}
+
+		public function set alienProjectileManager(value:AlienProjectileManager):void
+		{
+			_alienProjectileManager = value;
 		}
 
 

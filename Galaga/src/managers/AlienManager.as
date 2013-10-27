@@ -1,10 +1,6 @@
 package managers
 {
-	import citrus.core.CitrusEngine;
-	
 	import com.leebrimelow.starling.StarlingPool;
-	
-	import flash.utils.getTimer;
 	
 	import objects.Alien;
 	import objects.AlienEasy;
@@ -49,9 +45,9 @@ package managers
 			
 		private function initialize():void
 		{
-			_maxEasyAliens = 30;
+			_maxEasyAliens = 0;
 			_maxMediumAliens = 20;
-			_maxHardAliens = 10;
+			_maxHardAliens = 0;
 			_maxAliensAtOnce = 100;
 			
 			_poolAlienEasy = new StarlingPool(AlienEasy, _maxEasyAliens);
@@ -128,6 +124,18 @@ package managers
 					a = _aliensActive[i][j];
 					a.y += a.speed * deltaTime;
 					
+					// check the fire delay if it is type or 3
+					if (a is AlienMedium)
+					{
+						trace("(a as AlienMedium).hasFired: " + (a as AlienMedium).hasFired)
+						// the Alien only fire when it passes a certain height and if it hasn't already fired
+						if (a.y >= a.fireHeight && !(a as AlienMedium).hasFired)
+						{
+							(a as AlienMedium).hasFired = true;
+							_game.alienProjectileManager.spawnProjectile(a.x, a.y);
+						}
+					}
+					
 					// j should be passed as the index because j is the index of the alien inside the _aliensActive[i] Array
 					checkOffStage(a, j);
 				}
@@ -173,6 +181,14 @@ package managers
 				else
 				{
 					_tempAlien = _poolAlienMedium.getSprite() as Alien;
+					
+					// set to false to reset it if it was true previously
+					(_tempAlien as AlienMedium).hasFired = false;
+					
+					// set the fire delay here so that a new Alien of type 2 has a new fire rate
+					_tempAlien.fireDelay = (1 + Math.random() * 1) * 1000;	// delay between 1000 and 2000 ms
+					_tempAlien.fireHeight = 15 + Math.random() * 135;	// able to shoot between 15 and 150 pixels
+					
 					_aliensActive[1].push(_tempAlien);
 				}
 			}
@@ -247,7 +263,6 @@ package managers
 		
 		public function destroyAlien(a:Alien, i:Number):void
 		{
-			trace("destroyAlien");
 			if (a.type == 1)
 			{
 				_poolAlienEasy.returnSprite(a);
