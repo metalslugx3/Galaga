@@ -5,8 +5,6 @@ package managers
 	import feathers.controls.Slider;
 	import feathers.themes.MetalWorksMobileTheme;
 	
-	import flash.sampler.NewObjectSample;
-	
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Event;
@@ -37,6 +35,7 @@ package managers
 		
 		private function initialize(e:Event):void
 		{
+			trace("MasterVolumController initialize()");
 			this.removeEventListener(Event.ADDED_TO_STAGE, initialize);
 			
 			createContainer();

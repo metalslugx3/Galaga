@@ -2,7 +2,6 @@ package objects
 {
 	import core.Assets;
 	
-	import flash.geom.Rectangle;
 	import flash.utils.getTimer;
 	
 	import starling.core.Starling;
@@ -20,6 +19,7 @@ package objects
 		public static const KB_RIGHT:String = "right";
 		public static const KB_UP:String = "up";
 		public static const KB_DOWN:String = "down";
+		public static const KB_PAUSE:String = "pause";
 		
 		private var _game:GameState;
 		private var _image1:Image;
@@ -75,7 +75,7 @@ package objects
 		
 		private function createExhaustPS():void
 		{
-			_exhaustPS = new PDParticleSystem(XML(new Assets.XMLSmokeParticle()), Assets.textureAtlas.getTexture("smoke"));
+			_exhaustPS = new PDParticleSystem(XML(new Assets.XMLSmokeParticle()), Assets.getTextureFromAtlas("smoke"));
 			_exhaustPS.alignPivot("center", "center");
 			_game.addChild(_exhaustPS);
 			//_exhaustPS.scaleX = _exhaustPS.scaleY = 0.4;
@@ -83,6 +83,9 @@ package objects
 			//_exhaustPS.y = this.y;
 			_exhaustPS.start();
 			Starling.juggler.add(_exhaustPS);
+			
+			// add it to the pausable ps array to pause it
+			_game.pausableParticleSystems.push(_exhaustPS);
 		}
 		
 		private function createArt():void

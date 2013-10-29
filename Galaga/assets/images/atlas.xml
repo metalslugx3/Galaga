@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://texturepacker.com-->
-<!-- $TexturePacker:SmartUpdate:a69c2d0f14f499486d5cc9e0e65e4570$ -->
+<!-- $TexturePacker:SmartUpdate:05471de4b7fa43c5fd9293e499d6dd54$ -->
 <TextureAtlas imagePath="atlas.png">
-    <SubTexture name="explosion" x="2" y="147" width="56" height="56" frameX="-4" frameY="-4" frameWidth="64" frameHeight="64"/>
+    <SubTexture name="explosion" x="230" y="87" width="56" height="56" frameX="-4" frameY="-4" frameWidth="64" frameHeight="64"/>
     <SubTexture name="gameover_01" x="2" y="2" width="226" height="143" frameX="0" frameY="0" frameWidth="226" frameHeight="145"/>
-    <SubTexture name="options" x="108" y="175" width="57" height="18"/>
-    <SubTexture name="score" x="122" y="147" width="50" height="17"/>
-    <SubTexture name="smoke" x="60" y="147" width="30" height="30" frameX="0" frameY="0" frameWidth="32" frameHeight="32"/>
-    <SubTexture name="start" x="60" y="179" width="46" height="19" frameX="-2" frameY="0" frameWidth="48" frameHeight="19"/>
-    <SubTexture name="title" x="2" y="205" width="143" height="46" frameX="0" frameY="0" frameWidth="145" frameHeight="46"/>
-    <SubTexture name="volume-icon-final" x="92" y="147" width="28" height="26"/>
+    <SubTexture name="options" x="288" y="87" width="57" height="18"/>
+    <SubTexture name="paused" x="321" y="2" width="182" height="83" frameX="-8" frameY="-10" frameWidth="200" frameHeight="95"/>
+    <SubTexture name="score" x="230" y="2" width="50" height="17"/>
+    <SubTexture name="smoke" x="288" y="2" width="30" height="30" frameX="0" frameY="0" frameWidth="32" frameHeight="32"/>
+    <SubTexture name="start" x="230" y="62" width="46" height="19" frameX="-2" frameY="0" frameWidth="48" frameHeight="19"/>
+    <SubTexture name="title" x="2" y="147" width="317" height="92" frameX="0" frameY="-4" frameWidth="335" frameHeight="110"/>
+    <SubTexture name="volume-icon-final" x="288" y="34" width="28" height="26"/>
 </TextureAtlas>

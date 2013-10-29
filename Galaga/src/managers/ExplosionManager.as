@@ -38,6 +38,8 @@ package managers
 				tempE.y = -100;
 				_game.addChild(tempE);
 				tempE.alpha = 0;
+				
+				_game.pausableParticleSystems.push(tempE);
 			}
 			
 			_activeExplosions = [];
@@ -78,6 +80,9 @@ package managers
 			Starling.juggler.remove(ex);
 		}
 		
+		/**
+		 * 	Clean up Class.
+		 * */
 		public function destroy():void
 		{
 			// remove the explosions added to the GameState, call destroy, call dispose, splice from Array, remove references

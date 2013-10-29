@@ -1,8 +1,10 @@
 package states
 {
 	import citrus.core.starling.StarlingState;
+	import citrus.input.InputPhase;
 	import citrus.input.controllers.Keyboard;
-	import citrus.view.starlingview.StarlingView;
+	
+	import core.Assets;
 	
 	import flash.geom.Rectangle;
 	import flash.utils.getTimer;
@@ -17,6 +19,10 @@ package states
 	import objects.HUD;
 	import objects.Hero;
 	
+	import starling.core.Starling;
+	import starling.display.Image;
+	import starling.display.Sprite;
+	
 	public class GameState extends StarlingState
 	{
 		private var _bg:Background;
@@ -24,6 +30,9 @@ package states
 		private var _hero:Hero;
 		private var _isGameOver:Boolean;
 		
+		//----------------
+		//	Managers
+		//----------------
 		private var _bulletManager:BulletManager;
 		private var _alienManager:AlienManager;
 		private var _collisionManager:CollisionManager;
@@ -34,6 +43,14 @@ package states
 		private var _level:int;
 		private var _timeToIncreaseDifficulty:int;
 		private var _lastTime:Number;
+		
+		//----------------
+		//	Paused
+		//----------------
+		private var _isPaused:Boolean = false;
+		private var _hasPressedEsc:Boolean = false;
+		private var _pausedImage:Image;
+		private var _pausableParticleSystems:Array;
 		
 		public function GameState()
 		{
@@ -53,6 +70,7 @@ package states
 			
 			createBackground();
 			createHUD();
+			createPaused();
 			createHero();
 			createManagers();
 			createKeyInputs();
@@ -63,17 +81,40 @@ package states
 			_timeToIncreaseDifficulty = 500;
 		}
 		
+		private function createPaused():void
+		{
+			_pausedImage = new Image(Assets.getTextureFromAtlas("paused"));
+			this.addChild(_pausedImage);
+			
+			_pausedImage.alignPivot("center", "center");
+			_pausedImage.x = (stage.stageWidth >> 1);
+			_pausedImage.y = (stage.stageHeight >> 1);
+			_pausedImage.visible = false;
+			
+			// create pausable ps array; have all particle systems add themselves to this array
+			_pausableParticleSystems = [];
+		}
+		
 		override public function update(timeDelta:Number):void
 		{
-			super.update(timeDelta);
+			
 			
 			if (!_isGameOver)
 			{
-				checkDifficulty();
-				updateHero(timeDelta);
-				updateManagers(timeDelta);
+				// if the game isn't paused run these methods only
+				if (!_isPaused)
+				{
+					super.update(timeDelta);
+					checkDifficulty();
+					updateHero(timeDelta);
+					updateManagers(timeDelta);
+				}
+				
+				// keep the method for checking pause on/off running unless its gameover
+				updateKeyOtherKeyPresses();
 			}
-			else
+			
+			if (_isGameOver)
 			{
 				cleanUpGameState();
 				
@@ -188,6 +229,40 @@ package states
 			_alienProjectileManager.update(deltaTime);
 		}
 		
+		/**
+		 * 	This handles updates for keypresses that are generalized.
+		 * */
+		private function updateKeyOtherKeyPresses():void
+		{
+			// check for escape to pause game
+			if (!_hasPressedEsc && _ce.input.hasDone(Hero.KB_PAUSE))
+			{
+				// pause game
+				_isPaused = !_isPaused;
+				_hasPressedEsc = true;
+				
+				// show paused image
+				if (_isPaused)
+				{
+					_pausedImage.visible = true;
+					//Starling.current.stop(true);
+				}
+					
+				else
+				{
+					_pausedImage.visible = false;
+					//Starling.current.start();
+				}
+					
+				pauseAllParticleSystems();
+				trace("pause: " + _isPaused);
+			}
+			else
+			{
+				_hasPressedEsc = false;
+			}
+		}
+		
 		private function createBackground():void
 		{
 			_bg = new Background("bg", {x:0,y:-_ce.stage.stageHeight,width:0,height:0});
@@ -221,8 +296,32 @@ package states
 		{
 			// create new keyactions here
 			_ce.input.keyboard.addKeyAction(Hero.KB_FIRE, Keyboard.CTRL, 0);
+			_ce.input.keyboard.addKeyAction(Hero.KB_PAUSE, Keyboard.ESCAPE, 0);
 		}
 
+		/**
+		 * 	Pauses all particle systems that are in the array.
+		 * */
+		private function pauseAllParticleSystems():void
+		{
+			var i:int = _pausableParticleSystems.length - 1;
+			
+			if (_isPaused)
+			{
+				for (i; i >= 0; i--)
+				{
+					Starling.juggler.remove(_pausableParticleSystems[i]);
+				}
+			}
+			else
+			{
+				for (i; i >= 0; i--)
+				{
+					Starling.juggler.add(_pausableParticleSystems[i]);
+				}
+			}
+		}
+		
 		/**
 		 * Clean up the state.
 		 * */
@@ -247,13 +346,24 @@ package states
 			_bulletManager.destroy();
 			
 			// destroy alien manager
-			//_alienManager.destroy();
+			_alienManager.destroy();
 			
-			// desrtoy collision manager
-			//_collisionManager.destroy();
+			// destroy collision manager
+			_collisionManager.destroy();
+			
+			// destroy explosion manager
+			_explosionManager.destroy();
+			
+			// destroy alien projectile manager
+			_alienProjectileManager.destroy();
 			
 			// destroy the HUD
 			_hud.destroy();
+			
+			// destroy paused image
+			stage.removeChild(_pausedImage);
+			_pausedImage.dispose();
+			_pausedImage = null;
 		}
 		
 		public function get collisionManager():CollisionManager
@@ -344,6 +454,16 @@ package states
 		public function set hud(value:HUD):void
 		{
 			_hud = value;
+		}
+
+		public function get pausableParticleSystems():Array
+		{
+			return _pausableParticleSystems;
+		}
+
+		public function set pausableParticleSystems(value:Array):void
+		{
+			_pausableParticleSystems = value;
 		}
 
 
