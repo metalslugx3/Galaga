@@ -11,7 +11,7 @@ package states
 	
 	import managers.AlienManager;
 	import managers.AlienProjectileManager;
-	import managers.BulletManager;
+	import managers.HeroProjectileManager;
 	import managers.CollisionManager;
 	import managers.ExplosionManager;
 	
@@ -34,7 +34,7 @@ package states
 		//----------------
 		//	Managers
 		//----------------
-		private var _bulletManager:BulletManager;
+		private var _heroProjectileManager:HeroProjectileManager;
 		private var _alienManager:AlienManager;
 		private var _collisionManager:CollisionManager;
 		private var _explosionManager:ExplosionManager;
@@ -156,7 +156,6 @@ package states
 			// check movement keys
 			if (_ce.input.isDoing(Hero.KB_LEFT))
 			{
-				//trace("left");
 				_hero.x -= _hero.speed;
 			}
 			else if (_ce.input.isDoing(Hero.KB_RIGHT))
@@ -167,7 +166,6 @@ package states
 			
 			if (_ce.input.isDoing(Hero.KB_UP))
 			{
-				//trace("up");
 				_hero.y -= _hero.speed;
 			}
 			else if (_ce.input.isDoing(Hero.KB_DOWN))
@@ -187,6 +185,16 @@ package states
 				}
 			}
 			
+			// check fire bomb key
+			if (_ce.input.isDoing((Hero.KB_FIRE_BOMB)))
+			{
+				// allow the player to fire at least once by checking if time (frames passed on key press) is equal to 2
+				// additional firing will be delayed the _fireRate in hero
+				if (_ce.input.isDoing(Hero.KB_FIRE_BOMB).time == 2 || _ce.input.isDoing(Hero.KB_FIRE_BOMB).time % _hero.fireBombRate == 0)
+				{
+					_hero.fireBomb();
+				}
+			}
 			
 			// ensure the player stays within the game bounds
 			checkGameBounds();
@@ -224,7 +232,7 @@ package states
 		// TODO: deltatime should be a local var
 		private function updateManagers(deltaTime:Number):void
 		{
-			_bulletManager.update(deltaTime);
+			_heroProjectileManager.update(deltaTime);
 			_alienManager.update(deltaTime);
 			_explosionManager.update(deltaTime);
 			_alienProjectileManager.update(deltaTime);
@@ -292,7 +300,7 @@ package states
 		
 		private function createManagers():void
 		{
-			_bulletManager = new BulletManager(this);
+			_heroProjectileManager = new HeroProjectileManager(this);
 			_alienManager = new AlienManager(this);
 			_collisionManager = new CollisionManager(this);
 			_explosionManager = new ExplosionManager(this);
@@ -303,6 +311,7 @@ package states
 		{
 			// create new keyactions here
 			_ce.input.keyboard.addKeyAction(Hero.KB_FIRE, Keyboard.CTRL, 0);
+			_ce.input.keyboard.addKeyAction(Hero.KB_FIRE_BOMB, Keyboard.J, 0);
 			_ce.input.keyboard.addKeyAction(Hero.KB_PAUSE, Keyboard.ESCAPE, 0);
 		}
 		
@@ -326,8 +335,8 @@ package states
 			
 			// destroy keyboard?
 			
-			// destroy bullet manager
-			_bulletManager.destroy();
+			// destroy hero projectile manager
+			_heroProjectileManager.destroy();
 			
 			// destroy alien manager
 			_alienManager.destroy();
@@ -374,14 +383,14 @@ package states
 			_alienManager = value;
 		}
 		
-		public function get bulletManager():BulletManager
+		public function get heroProjectileManager():HeroProjectileManager
 		{
-			return _bulletManager;
+			return _heroProjectileManager;
 		}
 
-		public function set bulletManager(value:BulletManager):void
+		public function set heroProjectileManager(value:HeroProjectileManager):void
 		{
-			_bulletManager = value;
+			_heroProjectileManager = value;
 		}
 
 		public function get hero():Hero

@@ -15,6 +15,7 @@ package objects
 	public class Hero extends Sprite
 	{
 		public static const KB_FIRE:String = "fire";
+		public static const KB_FIRE_BOMB:String = "fireBomb";
 		public static const KB_LEFT:String = "left";
 		public static const KB_RIGHT:String = "right";
 		public static const KB_UP:String = "up";
@@ -35,6 +36,9 @@ package objects
 		
 		// how many frames will pass before the hero can fire; minimum is 2.
 		private var _fireRate:Number;
+		
+		// how many frames will pass before the hero can fire a bomb again; minimum is 2.
+		private var _fireBombRate:Number;
 		
 		// if the player is currently invincible or not (for respawning)
 		private var _isInvincible:Boolean;
@@ -64,6 +68,7 @@ package objects
 			_canFire = false;
 			_speed = 3;
 			_fireRate = 20;
+			_fireBombRate = 20;
 			_lives = 3;
 			_isInvincible = false;
 			_invincibleTime = 2500;
@@ -96,7 +101,12 @@ package objects
 		
 		public function fire():void
 		{
-			_game.bulletManager.spawnProjectile();
+			_game.heroProjectileManager.spawnProjectile();
+		}
+		
+		public function fireBomb():void
+		{
+			_game.heroProjectileManager.spawnBomb();
 		}
 		
 		public function update(deltaTime:Number):void
@@ -224,6 +234,17 @@ package objects
 		{
 			_isInvincible = value;
 		}
+
+		public function get fireBombRate():Number
+		{
+			return _fireBombRate;
+		}
+
+		public function set fireBombRate(value:Number):void
+		{
+			_fireBombRate = value;
+		}
+
 	}
 }
 

@@ -24,7 +24,7 @@ package objects
 			this.addEventListener(Event.ADDED_TO_STAGE, initialize);
 		}
 		
-		protected function initialize():void
+		protected function initialize(e:Event):void
 		{
 			this.removeEventListener(Event.ADDED_TO_STAGE, initialize);
 			

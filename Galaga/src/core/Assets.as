@@ -58,6 +58,9 @@ package core
 		
 		/**
 		 * 	Gets the texture from the texture dictionary if it exists, creates it if it doesn't.
+		 * 
+		 * 	TODO:	This is only useful for single textures; need a way to access multiple textures (for mc). Until then use the TextureAtlas itself for
+		 * 			MovieClips.	
 		 * */
 		public static function getTextureFromAtlas(name:String):Texture
 		{

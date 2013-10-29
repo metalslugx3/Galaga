@@ -22,9 +22,9 @@ package objects
 			this.addEventListener(Event.ADDED_TO_STAGE, initialize);
 		}
 		
-		override protected function initialize():void
+		override protected function initialize(e:Event):void
 		{
-			super.initialize();
+			super.initialize(e);
 			
 			_speed = 50;
 		}
