@@ -1,5 +1,7 @@
 package core
 {
+	import flash.utils.Dictionary;
+	
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
 
@@ -38,6 +40,9 @@ package core
 		public static var textureAtlas:TextureAtlas;
 		public static var textureAtlasSpaceship:TextureAtlas;
 		
+		private static var textureAtlasDictionary:Dictionary;
+		private static var textureAtlasSpaceshipDictionary:Dictionary;
+		
 		/**
 		 * init: 	Initialize the TextureAtlas.
 		 * 			You will access the TextureAtlas as, Assets.textureAtlas.
@@ -46,6 +51,35 @@ package core
 		{
 			textureAtlas = new TextureAtlas(Texture.fromBitmap(new GraphicTextureAtlas()), XML(new XMLTextureAtlas()));
 			textureAtlasSpaceship = new TextureAtlas(Texture.fromBitmap(new GraphicTextureAtlasSpaceShip()), XML(new XMLTextureAtlasSpaceShip()));
+			
+			textureAtlasDictionary = new Dictionary();
+			textureAtlasSpaceshipDictionary = new Dictionary();
+		}
+		
+		/**
+		 * 	Gets the texture from the texture dictionary if it exists, creates it if it doesn't.
+		 * */
+		public static function getTextureFromAtlas(name:String):Texture
+		{
+			if (textureAtlasDictionary[name] == undefined)
+			{
+				textureAtlasDictionary[name] = Assets.textureAtlas.getTexture(name);
+			}
+			
+			return textureAtlasDictionary[name];
+		}
+		
+		/**
+		 * 	Gets the texture from the spaceship texture dictionary if it exists, creates it if it doesn't.
+		 * */
+		public static function getTextureFromAtlasSpaceship(name:String):Texture
+		{
+			if (textureAtlasSpaceshipDictionary[name] == undefined)
+			{
+				textureAtlasSpaceshipDictionary[name] = Assets.textureAtlasSpaceship.getTexture(name);
+			}
+			
+			return textureAtlasSpaceshipDictionary[name];
 		}
 	}
 }

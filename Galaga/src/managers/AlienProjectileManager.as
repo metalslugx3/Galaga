@@ -58,11 +58,14 @@ package managers
 			}
 		}
 		
+		/**
+		 * 	For alien projectiles we must check all four boundaries because the hero position will affect certain projectile motion locations.
+		 * */
 		private function checkOffStage(ap:AlienProjectile, i:int):void
 		{
-			if (ap.y - ap.height * 0.5 <= 0)
+			if (ap.x < 0 || ap.x > _game.stage.stageWidth || ap.y < 0 || ap.y > _game.stage.stageHeight)
 			{
-				destroyAP(ap, i);	
+				destroyAP(ap, i);
 			}
 		}
 		

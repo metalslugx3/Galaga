@@ -6,9 +6,12 @@ package
 	
 	import flash.events.Event;
 	
+	import starling.core.starling_internal;
 	import starling.events.Event;
 	
 	import states.MenuState;
+	
+	import treefortress.sound.SoundAS;
 	
 	[SWF(width="640", height="480", frameRate="60", backgroundColor="#505050")]
 	public class Galaga extends StarlingCitrusEngine
@@ -31,7 +34,16 @@ package
 			stage.removeEventListener(flash.events.Event.ADDED_TO_STAGE, init);
 			
 			// set up the Starling instance & show fps
-			setUpStarling(true);
+			setUpStarling(false);
+			
+			// TODO: set master volume; integrate featers UI
+			SoundAS.masterVolume = 1;
+			_starling.stage.addEventListener(starling.events.Event.ENTER_FRAME, loop);
+		}
+		
+		private function loop(e:starling.events.Event):void
+		{
+			
 		}
 		
 		/**

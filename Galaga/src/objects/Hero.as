@@ -102,7 +102,7 @@ package objects
 			// check if the player is invincible to begin the invincible timer
 			if (_isInvincible)
 			{
-				trace(getInvincibleTimer());
+				//trace(getInvincibleTimer());
 				if (getTimer() - _invincibleStartTime >= _invincibleTime)
 				{
 					_isInvincible = false;

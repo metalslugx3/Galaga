@@ -14,11 +14,13 @@ package states
 	import managers.ExplosionManager;
 	
 	import objects.Background;
+	import objects.HUD;
 	import objects.Hero;
 	
 	public class GameState extends StarlingState
 	{
 		private var _bg:Background;
+		private var _hud:HUD;
 		private var _hero:Hero;
 		private var _isGameOver:Boolean;
 		
@@ -50,6 +52,7 @@ package states
 			_isGameOver = false;
 			
 			createBackground();
+			createHUD();
 			createHero();
 			createManagers();
 			createKeyInputs();
@@ -191,6 +194,12 @@ package states
 			this.add(_bg);
 		}
 		
+		private function createHUD():void
+		{
+			_hud = new HUD(this);
+			this.addChild(_hud);
+		}
+		
 		private function createHero():void
 		{
 			_hero = new Hero(this);
@@ -242,6 +251,9 @@ package states
 			
 			// desrtoy collision manager
 			//_collisionManager.destroy();
+			
+			// destroy the HUD
+			_hud.destroy();
 		}
 		
 		public function get collisionManager():CollisionManager
@@ -322,6 +334,16 @@ package states
 		public function set alienProjectileManager(value:AlienProjectileManager):void
 		{
 			_alienProjectileManager = value;
+		}
+
+		public function get hud():HUD
+		{
+			return _hud;
+		}
+
+		public function set hud(value:HUD):void
+		{
+			_hud = value;
 		}
 
 

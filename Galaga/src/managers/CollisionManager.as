@@ -64,10 +64,10 @@ package managers
 						
 						if (b.bounds.intersects(a.bounds))
 						{
-							trace("bullet hit alien");
+							//trace("bullet hit alien");
 							
 							// spawn explosion
-							trace(a.x, a.y);
+							//trace(a.x, a.y);
 							_game.explosionManager.createExplosion(a.x, a.y);
 							
 							// destroy alien
@@ -106,7 +106,12 @@ package managers
 					
 					if (!hero.isInvincible && hero.bounds.intersects(a.bounds))
 					{
-						trace("hero dead");
+						trace("hero hit");
+						
+						// spawn explosion
+						_game.explosionManager.createExplosion(a.x, a.y);
+						
+						// TODO: spawn explosion at hero
 						
 						// destroy alien
 						_game.alienManager.destroyAlien(a, k);
@@ -114,7 +119,8 @@ package managers
 						// destroy hero
 						hero.destroyHero();
 						
-						// spawn explosion
+						// take away one life icon
+						_game.hud.removeIcon();
 					}
 				}
 			}

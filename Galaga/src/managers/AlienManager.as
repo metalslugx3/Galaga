@@ -127,7 +127,8 @@ package managers
 					// check the fire delay if it is type or 3
 					if (a is AlienMedium)
 					{
-						trace("(a as AlienMedium).hasFired: " + (a as AlienMedium).hasFired)
+						// TODO: i have a bug here; see github
+						//trace("(a as AlienMedium).hasFired: " + (a as AlienMedium).hasFired)
 						// the Alien only fire when it passes a certain height and if it hasn't already fired
 						if (a.y >= a.fireHeight && !(a as AlienMedium).hasFired)
 						{

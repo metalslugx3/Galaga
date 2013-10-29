@@ -2,13 +2,8 @@ package states
 {
 	import citrus.core.starling.StarlingState;
 	import citrus.objects.CitrusSprite;
-	import citrus.view.spriteview.SpriteView;
 	
 	import core.Assets;
-	
-	import flashx.textLayout.elements.OverflowPolicy;
-	
-	import nape.geom.AABB;
 	
 	import objects.Background;
 	
