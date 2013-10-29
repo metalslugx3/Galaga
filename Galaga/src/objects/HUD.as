@@ -65,7 +65,7 @@ package objects
 		 * */
 		public function removeIcon():void
 		{
-			// set alpha to 0; lives have already been deducated in the heroDestroy() method
+			// set alpha to 0; lives have already been deducted in the heroDestroy() method
 			(_lives[_game.hero.lives] as Image).alpha = 0;
 		}
 		

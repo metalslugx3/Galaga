@@ -139,7 +139,7 @@ package managers
 			{
 				ap = _game.alienProjectileManager.alienProjectilesActive[i];
 				
-				if (hero.bounds.intersects(ap.bounds))
+				if (!hero.isInvincible && hero.bounds.intersects(ap.bounds))
 				{
 					trace("hero hit");
 					
@@ -149,11 +149,11 @@ package managers
 					// destroy hero
 					hero.destroyHero();
 					
-					// destroy alien projectile
-					_game.alienProjectileManager.destroyAP(ap, i);
-					
 					// take away one life icon
 					_game.hud.removeIcon();
+					
+					// destroy alien projectile
+					_game.alienProjectileManager.destroyAP(ap, i);
 				}
 			}
 		}

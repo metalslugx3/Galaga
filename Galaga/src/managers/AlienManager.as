@@ -290,14 +290,22 @@ package managers
 			_tempAlien = null;
 			
 			// remove the aliens added to the GameState, call destroy, call dispose, splice from Array, remove references
+			// recall that this is a multi-dimensional array
 			var a:Alien;
-			var i:int = _aliensActive.length - 1;
+			var i:int = _aliensActive.length - 1;	// how many arrays inside the active array holder
 			for (i; i >= 0; i--)
 			{
-				a = _aliensActive[i];
-				a.destroy();
-				a.dispose();
-				_game.removeChild(a);
+				var k:int = _aliensActive[i].length - 1;	// length of the aliens inside the current array
+				for (k; k >= 0; k--)
+				{
+					a = _aliensActive[i][k];
+					a.destroy();
+					a.dispose();
+					_game.removeChild(a);
+					_aliensActive[i].splice(k, 1);
+				}
+				
+				// finally, splice the active array from the array holder
 				_aliensActive.splice(i, 1);
 			}
 			a = null;

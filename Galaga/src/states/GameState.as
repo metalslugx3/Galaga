@@ -226,9 +226,9 @@ package states
 		{
 			_bulletManager.update(deltaTime);
 			_alienManager.update(deltaTime);
-			_collisionManager.update(deltaTime);
 			_explosionManager.update(deltaTime);
 			_alienProjectileManager.update(deltaTime);
+			_collisionManager.update(deltaTime);
 		}
 		
 		/**
