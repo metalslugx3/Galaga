@@ -26,7 +26,7 @@ package managers
 		
 		private function initialize():void
 		{
-			_maxProjectiles = 30;
+			_maxProjectiles = 50;
 			
 			_pool = new StarlingPool(AlienProjectile, _maxProjectiles);
 			

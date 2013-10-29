@@ -1,8 +1,9 @@
 package managers
 {	
 	import objects.Alien;
-	import objects.HeroProjectile;
+	import objects.AlienProjectile;
 	import objects.Hero;
+	import objects.HeroProjectile;
 	
 	import states.GameState;
 
@@ -25,7 +26,7 @@ package managers
 		public function update(deltaTime:Number):void
 		{
 			checkBulletsAndAliens();
-			//checkHeroAndAliens();
+			checkHeroAndAliens();
 			checkBulletsAndHero();
 		}
 		
@@ -128,52 +129,31 @@ package managers
 		
 		private function checkBulletsAndHero():void
 		{
-			var b:HeroProjectile;
-			var a:Alien;
+			var ap:AlienProjectile;
+			var hero:Hero = _game.hero;
 			
-			var bl:int = _game.bulletManager.bulletsActive.length - 1;
-			var i:int = bl;
-			
-			var activeAliens:Array = _game.alienManager.aliensActive;
-			
+			var apl:int = _game.alienProjectileManager.alienProjectilesActive.length - 1;
+			var i:int = apl;
+				
 			for (i; i >= 0; i--)
 			{
-				b = _game.bulletManager.bulletsActive[i];
+				ap = _game.alienProjectileManager.alienProjectilesActive[i];
 				
-				// active aliens multi-dimensional Array
-				var al:int = activeAliens.length - 1;
-				var j:int = al;
-				
-				for (j; j >= 0; j--)
+				if (hero.bounds.intersects(ap.bounds))
 				{
-					// if the length of the specific alien Array is 0 then skip this iteration
-					if (activeAliens[j].length == 0)
-					{
-						continue;
-					}
+					trace("hero hit");
 					
-					// iterate through the current active alien specific Array in aliensActive to find collision
-					var k:int = activeAliens[j].length - 1;
-					for (k; k >= 0; k--)
-					{
-						// the current alien
-						a = activeAliens[j][k];
-						
-						if (b.bounds.intersects(a.bounds))
-						{
-							trace("bullet hit alien");
-							
-							// spawn explosion
-							trace(a.x, a.y);
-							_game.explosionManager.createExplosion(a.x, a.y);
-							
-							// destroy alien
-							_game.alienManager.destroyAlien(a, k);
-							
-							// destroy bullet
-							_game.bulletManager.destroyBullet(b, i);
-						}
-					}
+					// spawn explosion
+					_game.explosionManager.createExplosion(hero.x, hero.y);
+					
+					// destroy hero
+					hero.destroyHero();
+					
+					// destroy alien projectile
+					_game.alienProjectileManager.destroyAP(ap, i);
+					
+					// take away one life icon
+					_game.hud.removeIcon();
 				}
 			}
 		}

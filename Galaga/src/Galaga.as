@@ -5,7 +5,9 @@ package
 	import core.Assets;
 	
 	import flash.events.Event;
+	import flash.system.Capabilities;
 	
+	import starling.core.Starling;
 	import starling.core.starling_internal;
 	import starling.events.Event;
 	
@@ -34,7 +36,7 @@ package
 			stage.removeEventListener(flash.events.Event.ADDED_TO_STAGE, init);
 			
 			// set up the Starling instance & show fps
-			setUpStarling(false);
+			setUpStarling(true);
 			
 			// TODO: set master volume; integrate featers UI
 			SoundAS.masterVolume = 1;

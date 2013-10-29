@@ -5,6 +5,8 @@ package states
 	
 	import core.Assets;
 	
+	import managers.MasterVolumeController;
+	
 	import objects.Background;
 	
 	import starling.display.Button;
@@ -14,8 +16,8 @@ package states
 	{
 		private var _bg:Background;
 		private var _titleCS:CitrusSprite;
-		private var _startBtn:Button;
-		private var _optionsBtn:Button;
+		private var _startBtn:starling.display.Button;
+		private var _optionsBtn:starling.display.Button;
 		
 		public function MenuState()
 		{
@@ -35,6 +37,14 @@ package states
 			createTitle();
 			createStartButton();
 			createOptionsButton();
+			
+			// create a master volume controller (singleton); check if it has a stage (means its already been added to stage), if so, dont add it again
+			var masterVolumeController:MasterVolumeController = MasterVolumeController.getInstance();
+			if (!MasterVolumeController.getInstance().stage)
+			{
+				trace("MasterVolumeController not added to stage yet; adding it to stage.");
+				stage.addChild(masterVolumeController);
+			}
 		}
 		
 		/**
@@ -59,7 +69,7 @@ package states
 		 * */
 		private function createOptionsButton():void
 		{
-			_optionsBtn = new Button(Assets.textureAtlas.getTexture("options"));
+			_optionsBtn = new starling.display.Button(Assets.textureAtlas.getTexture("options"));
 			_optionsBtn.x = _ce.stage.stageWidth * 0.5 - _optionsBtn.width * 0.5;
 			_optionsBtn.y = _startBtn.y + 50;
 			_optionsBtn.addEventListener(Event.TRIGGERED, buttonTriggered);
@@ -71,7 +81,7 @@ package states
 		 * */
 		private function createStartButton():void
 		{	
-			_startBtn = new Button(Assets.textureAtlas.getTexture("start"));
+			_startBtn = new starling.display.Button(Assets.textureAtlas.getTexture("start"));
 			_startBtn.x = _ce.stage.stageWidth * 0.5 - _startBtn.width * 0.5;
 			_startBtn.y = _titleCS.y + 50;
 			_startBtn.addEventListener(Event.TRIGGERED, buttonTriggered);
@@ -94,7 +104,7 @@ package states
 		 * */
 		private function buttonTriggered(e:Event):void
 		{
-			var btn:Button = e.target as Button;
+			var btn:starling.display.Button = e.target as starling.display.Button;
 			
 			if (e.target == _startBtn)
 			{
