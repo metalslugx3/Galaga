@@ -82,10 +82,9 @@ package objects
 			//_exhaustPS.x = this.x;
 			//_exhaustPS.y = this.y;
 			_exhaustPS.start();
-			Starling.juggler.add(_exhaustPS);
 			
-			// add it to the pausable ps array to pause it
-			_game.pausableParticleSystems.push(_exhaustPS);
+			// add it to the pausable juggler
+			_game.pausedGameObjectsJuggler.add(_exhaustPS);
 		}
 		
 		private function createArt():void

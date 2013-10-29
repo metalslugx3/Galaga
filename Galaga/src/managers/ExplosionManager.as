@@ -4,7 +4,6 @@ package managers
 	
 	import objects.Explosion;
 	
-	import starling.core.Starling;
 	import starling.events.Event;
 	
 	import states.GameState;
@@ -34,12 +33,11 @@ package managers
 			for (i; i < _maxExplosions; i++)
 			{
 				tempE = _pool.items[i];
+				tempE.scaleX = tempE.scaleY = 0.35;
 				tempE.x = -100;
 				tempE.y = -100;
 				_game.addChild(tempE);
-				tempE.alpha = 0;
-				
-				_game.pausableParticleSystems.push(tempE);
+				tempE.visible = false;
 			}
 			
 			_activeExplosions = [];
@@ -47,37 +45,62 @@ package managers
 		
 		public function update(deltaTime:Number):void
 		{
-			
+			//trace(_activeExplosions.length)
 		}
 		
 		public function createExplosion(x:int, y:int):void
 		{
+			//trace("creating explosion at: " + (x + " , " +  y));
 			if (_activeExplosions.length >= _maxExplosions)
 			{
 				return;
 			}
 			
+			// get explosion from pool
 			var tempExplosion:Explosion = (_pool.getSprite() as Explosion);
-			tempExplosion.scaleX = tempExplosion.scaleY = 0.35;
+			
+			// position explosion
 			tempExplosion.x = x;
 			tempExplosion.y = y;
-			Starling.juggler.add(tempExplosion);
-			tempExplosion.start(.18);
-			tempExplosion.alpha = 1;
+			
+			// set visibility to true
+			tempExplosion.visible = true;
+			
+			// add listener for complete
 			tempExplosion.addEventListener(Event.COMPLETE, onComplete);
+			
+			// start explosion; end early for good effect
+			tempExplosion.start(.18);
+			
+			// add explosion to juggler for animation
+			_game.pausedGameObjectsJuggler.add(tempExplosion);
+			
+			// add to array
+			_activeExplosions.push(tempExplosion);
 		}
 		
 		private function onComplete(e:Event):void
 		{
+			//trace("Explosion complete; removing; adding back to pool.");
 			var ex:Explosion = e.currentTarget as Explosion;
+			
+			// remove the listener
 			ex.removeEventListener(Event.COMPLETE, onComplete);
 			
+			// check if pool is null first (just in case the pool has been destroyed before the event method runs)
 			if (_pool != null)
 			{
 				_pool.returnSprite(ex);
 			}
 			
-			Starling.juggler.remove(ex);
+			// splice from array
+			_activeExplosions.splice(_activeExplosions.indexOf(ex), 1);
+			
+			// set visibility to false (no need to position off-stage)
+			ex.visible = false;
+			
+			// remove from juggler to stop animation
+			_game.pausedGameObjectsJuggler.remove(ex);
 		}
 		
 		/**
@@ -98,7 +121,7 @@ package managers
 					ex.removeEventListeners(Event.COMPLETE);
 				}
 				
-				Starling.juggler.remove(ex);
+				_game.pausedGameObjectsJuggler.remove(ex);
 				ex.stop(true);
 				ex.dispose();
 				_game.removeChild(ex);

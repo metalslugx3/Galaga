@@ -19,6 +19,7 @@ package states
 	import objects.HUD;
 	import objects.Hero;
 	
+	import starling.animation.Juggler;
 	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Sprite;
@@ -50,7 +51,9 @@ package states
 		private var _isPaused:Boolean = false;
 		private var _hasPressedEsc:Boolean = false;
 		private var _pausedImage:Image;
-		private var _pausableParticleSystems:Array;
+		
+		// juggler to hold IAnimateable objects for pausing
+		private var _pausedGameObjectsJuggler:Juggler;
 		
 		public function GameState()
 		{
@@ -76,7 +79,7 @@ package states
 			createKeyInputs();
 			
 			_gameBounds = new Rectangle(0, 0, stage.stageWidth, stage.stageHeight);
-			_level = 1;
+			_level = 15;
 			_lastTime = 0;
 			_timeToIncreaseDifficulty = 500;
 		}
@@ -91,14 +94,13 @@ package states
 			_pausedImage.y = (stage.stageHeight >> 1);
 			_pausedImage.visible = false;
 			
-			// create pausable ps array; have all particle systems add themselves to this array
-			_pausableParticleSystems = [];
+			// create juggler for pausing game objects
+			_pausedGameObjectsJuggler = new Juggler();
+			Starling.juggler.add(_pausedGameObjectsJuggler);
 		}
 		
 		override public function update(timeDelta:Number):void
 		{
-			
-			
 			if (!_isGameOver)
 			{
 				// if the game isn't paused run these methods only
@@ -143,7 +145,7 @@ package states
 				// increase bg scroll speed slightly
 				_bg.velocity = [0, _bg.velocity[1]+=1];
 				
-				trace("level: " + _level);
+				//trace("level: " + _level);
 			}
 		}
 		
@@ -244,17 +246,22 @@ package states
 				// show paused image
 				if (_isPaused)
 				{
+					// remove the juggler holding animations from the default juggler to pause
+					Starling.juggler.remove(_pausedGameObjectsJuggler);
+					
 					_pausedImage.visible = true;
 					//Starling.current.stop(true);
 				}
 					
 				else
 				{
+					// add the juggler holding animations from the default juggler to continue animation
+					Starling.juggler.add(_pausedGameObjectsJuggler);
+					
 					_pausedImage.visible = false;
 					//Starling.current.start();
 				}
 					
-				pauseAllParticleSystems();
 				trace("pause: " + _isPaused);
 			}
 			else
@@ -297,29 +304,6 @@ package states
 			// create new keyactions here
 			_ce.input.keyboard.addKeyAction(Hero.KB_FIRE, Keyboard.CTRL, 0);
 			_ce.input.keyboard.addKeyAction(Hero.KB_PAUSE, Keyboard.ESCAPE, 0);
-		}
-
-		/**
-		 * 	Pauses all particle systems that are in the array.
-		 * */
-		private function pauseAllParticleSystems():void
-		{
-			var i:int = _pausableParticleSystems.length - 1;
-			
-			if (_isPaused)
-			{
-				for (i; i >= 0; i--)
-				{
-					Starling.juggler.remove(_pausableParticleSystems[i]);
-				}
-			}
-			else
-			{
-				for (i; i >= 0; i--)
-				{
-					Starling.juggler.add(_pausableParticleSystems[i]);
-				}
-			}
 		}
 		
 		/**
@@ -364,6 +348,10 @@ package states
 			stage.removeChild(_pausedImage);
 			_pausedImage.dispose();
 			_pausedImage = null;
+			
+			// destroy juggler
+			_pausedGameObjectsJuggler.purge();
+			Starling.juggler.purge();
 		}
 		
 		public function get collisionManager():CollisionManager
@@ -456,17 +444,15 @@ package states
 			_hud = value;
 		}
 
-		public function get pausableParticleSystems():Array
+		public function get pausedGameObjectsJuggler():Juggler
 		{
-			return _pausableParticleSystems;
+			return _pausedGameObjectsJuggler;
 		}
 
-		public function set pausableParticleSystems(value:Array):void
+		public function set pausedGameObjectsJuggler(value:Juggler):void
 		{
-			_pausableParticleSystems = value;
+			_pausedGameObjectsJuggler = value;
 		}
-
-
 	}
 }
 

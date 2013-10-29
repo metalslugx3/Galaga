@@ -46,7 +46,7 @@ package managers
 		private function initialize():void
 		{
 			_maxEasyAliens = 0;
-			_maxMediumAliens = 20;
+			_maxMediumAliens = 25;
 			_maxHardAliens = 0;
 			_maxAliensAtOnce = 100;
 			
