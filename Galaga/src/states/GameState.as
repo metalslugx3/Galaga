@@ -179,7 +179,8 @@ package states
 			{
 				// allow the player to fire at least once by checking if time (frames passed on key press) is equal to 2
 				// additional firing will be delayed the _fireRate in hero
-				if (_ce.input.isDoing(Hero.KB_FIRE).time == 2 || _ce.input.isDoing(Hero.KB_FIRE).time % _hero.fireRate == 0)
+				if (_ce.input.isDoing(Hero.KB_FIRE).time == 2 || 
+					_ce.input.isDoing(Hero.KB_FIRE).time % _hero.fireRate == 0)
 				{
 					_hero.fire();
 				}
@@ -190,7 +191,9 @@ package states
 			{
 				// allow the player to fire at least once by checking if time (frames passed on key press) is equal to 2
 				// additional firing will be delayed the _fireRate in hero
-				if (_ce.input.isDoing(Hero.KB_FIRE_BOMB).time == 2 || _ce.input.isDoing(Hero.KB_FIRE_BOMB).time % _hero.fireBombRate == 0)
+				if (_hero.canFireBomb &&
+					(_ce.input.isDoing(Hero.KB_FIRE_BOMB).time == 2 || 
+					_ce.input.isDoing(Hero.KB_FIRE_BOMB).time % _hero.fireBombRate == 0))
 				{
 					_hero.fireBomb();
 				}

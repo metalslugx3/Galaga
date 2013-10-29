@@ -118,11 +118,20 @@ package managers
 						
 						if (b.bounds.intersects(a.bounds))
 						{
-							// spawn explosion
-							_game.explosionManager.createExplosion(a.x, a.y);
+							// distance check
+							var dx:Number = b.x - a.x;
+							var dy:Number = b.y - a.y;
+							var dist:Number = Math.sqrt( (dx * dx + dy * dy) );
 							
-							// destroy alien
-							_game.alienManager.destroyAlien(a, k);
+							// we kill alien only if its within a certain radius
+							if (dist < b.radius)
+							{
+								// spawn explosion
+								_game.explosionManager.createExplosion(a.x, a.y);
+								
+								// destroy alien
+								_game.alienManager.destroyAlien(a, k);
+							}
 						}
 					}
 				}

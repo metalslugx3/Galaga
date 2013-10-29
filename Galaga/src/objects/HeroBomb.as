@@ -11,6 +11,8 @@ package objects
 	
 	public class HeroBomb extends Projectile
 	{
+		public var radius:int;
+		
 		private var _mc:MovieClip;
 		private var _isActive:Boolean;
 		
@@ -27,6 +29,7 @@ package objects
 			
 			explosionDone = new Signal();
 			_isActive = false;
+			radius = 120;
 		}
 		
 		override protected function createArt():void
@@ -55,6 +58,9 @@ package objects
 			_isActive = false;
 			_mc.visible = false;
 			_mc.stop();
+			
+			// tell hero he can fire another bomb since the first one expired
+			_game.hero.canFireBomb = true;
 		}
 		
 		public function beginExplosion():void

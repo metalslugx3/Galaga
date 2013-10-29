@@ -88,7 +88,7 @@ package managers
 			if (!_heroBomb)
 			{
 				_heroBomb = new HeroBomb(_game);
-				_game.addChild(_heroBomb);
+				_game.addChildAt(_heroBomb, 1);
 				
 				// add a signal to listen for the explosion animation complete
 				_heroBomb.explosionDone.add(explosionBombComplete);

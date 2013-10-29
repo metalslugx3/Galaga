@@ -28,6 +28,9 @@ package objects
 		// if the hero can fire or not
 		private var _canFire:Boolean;
 		
+		// if the hero can fire a bomb or not
+		private var _canFireBomb:Boolean;
+		
 		// the speed of the hero
 		private var _speed:Number;
 		
@@ -66,9 +69,10 @@ package objects
 			this.removeEventListener(Event.ADDED_TO_STAGE, initialize);
 			
 			_canFire = false;
+			_canFireBomb = true;
 			_speed = 3;
 			_fireRate = 20;
-			_fireBombRate = 20;
+			_fireBombRate = 200;
 			_lives = 3;
 			_isInvincible = false;
 			_invincibleTime = 2500;
@@ -106,7 +110,12 @@ package objects
 		
 		public function fireBomb():void
 		{
-			_game.heroProjectileManager.spawnBomb();
+			// able to fire bombs if allowed; to prevent more than one explosion happening at once
+			if (_canFireBomb)
+			{
+				_game.heroProjectileManager.spawnBomb();
+				_canFireBomb = false;
+			}
 		}
 		
 		public function update(deltaTime:Number):void
@@ -244,6 +253,17 @@ package objects
 		{
 			_fireBombRate = value;
 		}
+
+		public function get canFireBomb():Boolean
+		{
+			return _canFireBomb;
+		}
+
+		public function set canFireBomb(value:Boolean):void
+		{
+			_canFireBomb = value;
+		}
+
 
 	}
 }
