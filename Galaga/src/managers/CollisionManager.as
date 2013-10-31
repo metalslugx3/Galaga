@@ -26,13 +26,14 @@ package managers
 		
 		public function update(deltaTime:Number):void
 		{
-			checkBulletsAndAliens();
+			checkHeroProjectilesAndAliens();
 			checkBombAndAliens();
+			checkBombAndAlienProjectiles();
 			//checkHeroAndAliens();
-			//checkBulletsAndHero();
+			//checkAlienProjectilesAndHero();
 		}
 		
-		private function checkBulletsAndAliens():void
+		private function checkHeroProjectilesAndAliens():void
 		{
 			var b:HeroProjectile;
 			var a:Alien;
@@ -86,7 +87,11 @@ package managers
 		
 		private function checkBombAndAliens():void
 		{
-			var b:HeroBomb = _game.heroProjectileManager.heroBomb;
+			var hb:HeroBomb = _game.heroProjectileManager.heroBomb;
+			
+			if (!hb || !hb.isActive)
+				return;
+			
 			var a:Alien;
 			
 			var bl:int = _game.heroProjectileManager.bulletsActive.length - 1;
@@ -98,41 +103,68 @@ package managers
 			var al:int = activeAliens.length - 1;
 			var j:int = al;
 			
-			// only check if the explosion is not null and active
-			if (b && b.isActive)
+			for (j; j >= 0; j--)
 			{
-				for (j; j >= 0; j--)
+				// if the length of the specific alien Array is 0 then skip this iteration
+				if (activeAliens[j].length == 0)
 				{
-					// if the length of the specific alien Array is 0 then skip this iteration
-					if (activeAliens[j].length == 0)
-					{
-						continue;
-					}
+					continue;
+				}
+				
+				// iterate through the current active alien specific Array in aliensActive to find collision
+				var k:int = activeAliens[j].length - 1;
+				for (k; k >= 0; k--)
+				{
+					// the current alien
+					a = activeAliens[j][k];
 					
-					// iterate through the current active alien specific Array in aliensActive to find collision
-					var k:int = activeAliens[j].length - 1;
-					for (k; k >= 0; k--)
+					if (hb.bounds.intersects(a.bounds))
 					{
-						// the current alien
-						a = activeAliens[j][k];
+						// distance check
+						var dx:Number = hb.x - a.x;
+						var dy:Number = hb.y - a.y;
+						var dist:Number = Math.sqrt( (dx * dx + dy * dy) );
 						
-						if (b.bounds.intersects(a.bounds))
+						// we kill alien only if its within a certain radius
+						if (dist < hb.radius)
 						{
-							// distance check
-							var dx:Number = b.x - a.x;
-							var dy:Number = b.y - a.y;
-							var dist:Number = Math.sqrt( (dx * dx + dy * dy) );
+							// spawn explosion
+							_game.explosionManager.createExplosion(a.x, a.y);
 							
-							// we kill alien only if its within a certain radius
-							if (dist < b.radius)
-							{
-								// spawn explosion
-								_game.explosionManager.createExplosion(a.x, a.y);
-								
-								// destroy alien
-								_game.alienManager.destroyAlien(a, k);
-							}
+							// destroy alien
+							_game.alienManager.destroyAlien(a, k);
 						}
+					}
+				}
+			}
+		}
+		
+		private function checkBombAndAlienProjectiles():void
+		{
+			var hb:HeroBomb = _game.heroProjectileManager.heroBomb;
+			
+			if (!hb || !hb.isActive)
+				return;
+			
+			var ap:AlienProjectile;
+			var apl:int = _game.alienProjectileManager.alienProjectilesActive.length - 1;
+			var i:int = apl;
+			
+			for (i; i >= 0; i--)
+			{
+				ap = _game.alienProjectileManager.alienProjectilesActive[i];
+				
+				if (hb.bounds.intersects(ap.bounds))
+				{
+					// distance check
+					var dx:Number = hb.x - ap.x;
+					var dy:Number = hb.y - ap.y;
+					var dist:Number = Math.sqrt( (dx * dx + dy * dy) );
+					
+					if (dist < hb.radius)
+					{
+						// destroy alien
+						_game.alienProjectileManager.destroyAP(ap, i);
 					}
 				}
 			}
@@ -183,7 +215,7 @@ package managers
 			}
 		}
 		
-		private function checkBulletsAndHero():void
+		private function checkAlienProjectilesAndHero():void
 		{
 			var ap:AlienProjectile;
 			var hero:Hero = _game.hero;

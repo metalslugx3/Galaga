@@ -1,8 +1,6 @@
 package states
 {
 	import citrus.core.starling.StarlingState;
-	import citrus.input.InputPhase;
-	import citrus.input.controllers.Keyboard;
 	
 	import core.Assets;
 	
@@ -11,9 +9,9 @@ package states
 	
 	import managers.AlienManager;
 	import managers.AlienProjectileManager;
-	import managers.HeroProjectileManager;
 	import managers.CollisionManager;
 	import managers.ExplosionManager;
+	import managers.HeroProjectileManager;
 	
 	import objects.Background;
 	import objects.HUD;
@@ -22,7 +20,6 @@ package states
 	import starling.animation.Juggler;
 	import starling.core.Starling;
 	import starling.display.Image;
-	import starling.display.Sprite;
 	
 	public class GameState extends StarlingState
 	{
@@ -101,6 +98,8 @@ package states
 		
 		override public function update(timeDelta:Number):void
 		{
+			
+			
 			if (!_isGameOver)
 			{
 				// if the game isn't paused run these methods only
@@ -112,7 +111,7 @@ package states
 					updateManagers(timeDelta);
 				}
 				
-				// keep the method for checking pause on/off running unless its gameover
+				// keep the method for checking pause on/off & options menu running unless its gameover
 				updateKeyOtherKeyPresses();
 			}
 			
@@ -154,46 +153,44 @@ package states
 			_hero.update(deltaTime);
 			
 			// check movement keys
-			if (_ce.input.isDoing(Hero.KB_LEFT))
+			if (_ce.input.isDoing(Hero.KB_LEFT.string))
 			{
 				_hero.x -= _hero.speed;
 			}
-			else if (_ce.input.isDoing(Hero.KB_RIGHT))
+			else if (_ce.input.isDoing(Hero.KB_RIGHT.string))
 			{
 				_hero.x += _hero.speed;
 			}
 			
 			
-			if (_ce.input.isDoing(Hero.KB_UP))
+			if (_ce.input.isDoing(Hero.KB_UP.string))
 			{
 				_hero.y -= _hero.speed;
 			}
-			else if (_ce.input.isDoing(Hero.KB_DOWN))
+			else if (_ce.input.isDoing(Hero.KB_DOWN.string))
 			{
 				_hero.y += _hero.speed;
 			}
 			
 			
 			// check fire key
-			if (_ce.input.isDoing((Hero.KB_FIRE)))
+			if (_ce.input.isDoing((Hero.KB_FIRE.string)))
 			{
 				// allow the player to fire at least once by checking if time (frames passed on key press) is equal to 2
 				// additional firing will be delayed the _fireRate in hero
-				if (_ce.input.isDoing(Hero.KB_FIRE).time == 2 || 
-					_ce.input.isDoing(Hero.KB_FIRE).time % _hero.fireRate == 0)
+				if (_ce.input.isDoing(Hero.KB_FIRE.string).time == 2 || 
+					_ce.input.isDoing(Hero.KB_FIRE.string).time % _hero.fireRate == 0)
 				{
 					_hero.fire();
 				}
 			}
 			
-			// check fire bomb key
-			if (_ce.input.isDoing((Hero.KB_FIRE_BOMB)))
+			// check fire bomb key & if the cooldown is finished
+			if (_ce.input.isDoing(Hero.KB_BOMB.string) && getTimer() - _hero.bombStartCoolDown >= _hero.bombCoolDown)
 			{
 				// allow the player to fire at least once by checking if time (frames passed on key press) is equal to 2
 				// additional firing will be delayed the _fireRate in hero
-				if (_hero.canFireBomb &&
-					(_ce.input.isDoing(Hero.KB_FIRE_BOMB).time == 2 || 
-					_ce.input.isDoing(Hero.KB_FIRE_BOMB).time % _hero.fireBombRate == 0))
+				if (_hero.canFireBomb)
 				{
 					_hero.fireBomb();
 				}
@@ -247,38 +244,51 @@ package states
 		 * */
 		private function updateKeyOtherKeyPresses():void
 		{
-			// check for escape to pause game
-			if (!_hasPressedEsc && _ce.input.hasDone(Hero.KB_PAUSE))
+			if (_ce.input.hasDone(Hero.KB_OPTIONS.string))
 			{
-				// pause game
-				_isPaused = !_isPaused;
-				_hasPressedEsc = true;
-				
-				// show paused image
-				if (_isPaused)
-				{
-					// remove the juggler holding animations from the default juggler to pause
-					Starling.juggler.remove(_pausedGameObjectsJuggler);
-					
-					_pausedImage.visible = true;
-					//Starling.current.stop(true);
-				}
-					
-				else
-				{
-					// add the juggler holding animations from the default juggler to continue animation
-					Starling.juggler.add(_pausedGameObjectsJuggler);
-					
-					_pausedImage.visible = false;
-					//Starling.current.start();
-				}
-					
-				trace("pause: " + _isPaused);
+				MenuState.optionsManager.toggle();
+				pauseGame();
+			}
+			
+			// check for escape to pause game
+			if (!_hasPressedEsc && _ce.input.hasDone(Hero.KB_PAUSE.string))
+			{
+				pauseGame();
 			}
 			else
 			{
 				_hasPressedEsc = false;
 			}
+		}
+		
+		/**
+		 * 	Logic for pausing the game.
+		 * */
+		private function pauseGame():void
+		{
+			_isPaused = !_isPaused;
+			_hasPressedEsc = true;
+			
+			// show paused image
+			if (_isPaused)
+			{
+				// remove the juggler holding animations from the default juggler to pause
+				Starling.juggler.remove(_pausedGameObjectsJuggler);
+				
+				_pausedImage.visible = true;
+				//Starling.current.stop(true);
+			}
+				
+			else
+			{
+				// add the juggler holding animations from the default juggler to continue animation
+				Starling.juggler.add(_pausedGameObjectsJuggler);
+				
+				_pausedImage.visible = false;
+				//Starling.current.start();
+			}
+			
+			trace("pause: " + _isPaused);
 		}
 		
 		private function createBackground():void
@@ -313,9 +323,13 @@ package states
 		private function createKeyInputs():void
 		{
 			// create new keyactions here
-			_ce.input.keyboard.addKeyAction(Hero.KB_FIRE, Keyboard.CTRL, 0);
-			_ce.input.keyboard.addKeyAction(Hero.KB_FIRE_BOMB, Keyboard.J, 0);
-			_ce.input.keyboard.addKeyAction(Hero.KB_PAUSE, Keyboard.ESCAPE, 0);
+			_ce.input.keyboard.addKeyAction(Hero.KB_UP.string, Hero.KB_UP.key, 0);
+			_ce.input.keyboard.addKeyAction(Hero.KB_DOWN.string, Hero.KB_DOWN.key, 0);
+			_ce.input.keyboard.addKeyAction(Hero.KB_LEFT.string, Hero.KB_LEFT.key, 0);
+			_ce.input.keyboard.addKeyAction(Hero.KB_RIGHT.string, Hero.KB_RIGHT.key, 0);
+			_ce.input.keyboard.addKeyAction(Hero.KB_FIRE.string, Hero.KB_FIRE.key, 0);
+			_ce.input.keyboard.addKeyAction(Hero.KB_BOMB.string, Hero.KB_BOMB.key, 0);
+			_ce.input.keyboard.addKeyAction(Hero.KB_PAUSE.string, Hero.KB_PAUSE.key, 0);
 		}
 		
 		/**
@@ -357,7 +371,7 @@ package states
 			_hud.destroy();
 			
 			// destroy paused image
-			stage.removeChild(_pausedImage);
+			this.removeChild(_pausedImage);
 			_pausedImage.dispose();
 			_pausedImage = null;
 			

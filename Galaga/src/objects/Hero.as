@@ -1,5 +1,7 @@
 package objects
 {
+	import citrus.input.controllers.Keyboard;
+	
 	import core.Assets;
 	
 	import flash.utils.getTimer;
@@ -14,13 +16,17 @@ package objects
 	
 	public class Hero extends Sprite
 	{
-		public static const KB_FIRE:String = "fire";
-		public static const KB_FIRE_BOMB:String = "fireBomb";
-		public static const KB_LEFT:String = "left";
-		public static const KB_RIGHT:String = "right";
-		public static const KB_UP:String = "up";
-		public static const KB_DOWN:String = "down";
-		public static const KB_PAUSE:String = "pause";
+		//-------------
+		//	Default keys
+		//-------------
+		public static var KB_UP:Object = {string:"up", key:Keyboard.UP};
+		public static var KB_DOWN:Object = {string:"down", key:Keyboard.DOWN};
+		public static var KB_LEFT:Object = {string:"left", key:Keyboard.LEFT};
+		public static var KB_RIGHT:Object = {string:"right", key:Keyboard.RIGHT};
+		public static var KB_FIRE:Object = {string:"fire", key:Keyboard.CTRL};
+		public static var KB_BOMB:Object = {string:"bomb", key:Keyboard.J};
+		public static var KB_PAUSE:Object = {string:"pause", key:Keyboard.P};
+		public static var KB_OPTIONS:Object = {string:"options", key:Keyboard.O};
 		
 		private var _game:GameState;
 		private var _image1:Image;
@@ -41,7 +47,7 @@ package objects
 		private var _fireRate:Number;
 		
 		// how many frames will pass before the hero can fire a bomb again; minimum is 2.
-		private var _fireBombRate:Number;
+		private var _bombRate:Number;
 		
 		// if the player is currently invincible or not (for respawning)
 		private var _isInvincible:Boolean;
@@ -54,6 +60,12 @@ package objects
 		
 		// the hero's exhaust particle system
 		private var _exhaustPS:PDParticleSystem;
+		
+		// cooldown for bomb in ms
+		private var _bombCoolDown:int;
+		
+		// the time (in ms since the flash player started) when the bomb went off
+		private var _bombStartCoolDown:int;
 		
 		public function Hero(game:GameState)
 		{
@@ -72,11 +84,15 @@ package objects
 			_canFireBomb = true;
 			_speed = 3;
 			_fireRate = 20;
-			_fireBombRate = 200;
+			_bombRate = 200;
 			_lives = 3;
 			_isInvincible = false;
 			_invincibleTime = 2500;
 			_invincibleStartTime = 0;
+			_bombCoolDown = 3000;
+			
+			// this is negative so the hero can fire a bomb immediately
+			_bombStartCoolDown = -_bombCoolDown;
 			
 			createArt();
 			createExhaustPS();
@@ -113,6 +129,8 @@ package objects
 			// able to fire bombs if allowed; to prevent more than one explosion happening at once
 			if (_canFireBomb)
 			{
+				// capture the current time & insert into the start cooldown for bomb
+				_game.hero.bombStartCoolDown = getTimer();
 				_game.heroProjectileManager.spawnBomb();
 				_canFireBomb = false;
 			}
@@ -244,14 +262,14 @@ package objects
 			_isInvincible = value;
 		}
 
-		public function get fireBombRate():Number
+		public function get bombRate():Number
 		{
-			return _fireBombRate;
+			return _bombRate;
 		}
 
-		public function set fireBombRate(value:Number):void
+		public function set bombRate(value:Number):void
 		{
-			_fireBombRate = value;
+			_bombRate = value;
 		}
 
 		public function get canFireBomb():Boolean
@@ -262,6 +280,26 @@ package objects
 		public function set canFireBomb(value:Boolean):void
 		{
 			_canFireBomb = value;
+		}
+
+		public function get bombCoolDown():int
+		{
+			return _bombCoolDown;
+		}
+
+		public function set bombCoolDown(value:int):void
+		{
+			_bombCoolDown = value;
+		}
+
+		public function get bombStartCoolDown():int
+		{
+			return _bombStartCoolDown;
+		}
+
+		public function set bombStartCoolDown(value:int):void
+		{
+			_bombStartCoolDown = value;
 		}
 
 

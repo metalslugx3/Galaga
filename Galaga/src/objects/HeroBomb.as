@@ -63,6 +63,9 @@ package objects
 			_game.hero.canFireBomb = true;
 		}
 		
+		/**
+		 * 	Starts the explosion animation.
+		 * */
 		public function beginExplosion():void
 		{
 			_isActive = true;

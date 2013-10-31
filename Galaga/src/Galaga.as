@@ -6,6 +6,8 @@ package
 	
 	import flash.events.Event;
 	import flash.system.Capabilities;
+	import flash.ui.Multitouch;
+	import flash.ui.MultitouchInputMode;
 	
 	import starling.core.Starling;
 	import starling.core.starling_internal;
@@ -34,6 +36,8 @@ package
 		{
 			// remove the stage listener
 			stage.removeEventListener(flash.events.Event.ADDED_TO_STAGE, init);
+			
+			Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
 			
 			// set up the Starling instance & show fps
 			setUpStarling(true);

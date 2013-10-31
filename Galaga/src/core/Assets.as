@@ -35,6 +35,12 @@ package core
 		public static const XMLExplosionParticle:Class;
 		
 		/**
+		 * 	Embed swf.
+		 * */
+		[Embed(source="../assets/images/options-menu.swf")]
+		public static const MenuSWF:Class;
+		
+		/**
 		 * Texture Atlas.
 		 * */
 		public static var textureAtlas:TextureAtlas;
