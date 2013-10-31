@@ -1,5 +1,7 @@
 package managers
 {	
+	import core.Assets;
+	
 	import objects.Alien;
 	import objects.AlienProjectile;
 	import objects.Hero;
@@ -7,6 +9,8 @@ package managers
 	import objects.HeroProjectile;
 	
 	import states.GameState;
+	
+	import treefortress.sound.SoundAS;
 
 	public class CollisionManager
 	{
@@ -29,8 +33,8 @@ package managers
 			checkHeroProjectilesAndAliens();
 			checkBombAndAliens();
 			checkBombAndAlienProjectiles();
-			//checkHeroAndAliens();
-			//checkAlienProjectilesAndHero();
+			checkHeroAndAliens();
+			checkAlienProjectilesAndHero();
 		}
 		
 		private function checkHeroProjectilesAndAliens():void
@@ -66,7 +70,7 @@ package managers
 						// the current alien
 						a = activeAliens[j][k];
 						
-						if (b.bounds.intersects(a.bounds))
+						if (b.bounds.intersects(a.bounds) && !_game.isGameOver)
 						{
 							//trace("bullet hit alien");
 							
@@ -79,6 +83,18 @@ package managers
 							
 							// destroy bullet
 							_game.heroProjectileManager.destroyBullet(b, i);
+							
+							// add points for player; added here to catch all aliens killed
+							_game.hero.totalPoints += a.pointsWorth;
+							
+							// update score
+							_game.hud.updateScore();
+							
+							// play sound
+							SoundAS.play(Assets.ENEMY_EXPLODE);
+							
+							// break to prevent multiple overlap hit checks
+							break;
 						}
 					}
 				}
@@ -118,7 +134,7 @@ package managers
 					// the current alien
 					a = activeAliens[j][k];
 					
-					if (hb.bounds.intersects(a.bounds))
+					if (hb.bounds.intersects(a.bounds) && !_game.isGameOver)
 					{
 						// distance check
 						var dx:Number = hb.x - a.x;
@@ -133,6 +149,15 @@ package managers
 							
 							// destroy alien
 							_game.alienManager.destroyAlien(a, k);
+							
+							// add points for player; added here to catch all aliens killed
+							_game.hero.totalPoints += a.pointsWorth;
+							
+							// update score
+							_game.hud.updateScore();
+							
+							// play sound
+							SoundAS.play(Assets.ENEMY_EXPLODE);
 						}
 					}
 				}
@@ -154,7 +179,7 @@ package managers
 			{
 				ap = _game.alienProjectileManager.alienProjectilesActive[i];
 				
-				if (hb.bounds.intersects(ap.bounds))
+				if (hb.bounds.intersects(ap.bounds) && !_game.isGameOver)
 				{
 					// distance check
 					var dx:Number = hb.x - ap.x;
@@ -193,23 +218,37 @@ package managers
 				{
 					a = activeAliens[j][k];
 					
-					if (!hero.isInvincible && hero.bounds.intersects(a.bounds))
+					if (!_game.isGameOver && !hero.isInvincible && hero.bounds.intersects(a.bounds))
 					{
-						trace("hero hit");
+						// distance check
+						var dx:Number = hero.x - a.x;
+						var dy:Number = hero.y - a.y;
+						var dist:Number = Math.sqrt( (dx * dx + dy * dy) );
 						
-						// spawn explosion
-						_game.explosionManager.createExplosion(a.x, a.y);
-						
-						// TODO: spawn explosion at hero
-						
-						// destroy alien
-						_game.alienManager.destroyAlien(a, k);
-						
-						// destroy hero
-						hero.destroyHero();
-						
-						// take away one life icon
-						_game.hud.removeIcon();
+						if (dist < 40)
+						{
+							trace("hero hit");
+							
+							// spawn explosion
+							_game.explosionManager.createExplosion(a.x, a.y);
+							
+							// TODO: spawn explosion at hero
+							
+							// destroy alien
+							_game.alienManager.destroyAlien(a, k);
+							
+							// destroy hero
+							hero.destroyHero();
+							
+							// take away one life icon
+							_game.hud.removeIcon();
+							
+							// play sound
+							SoundAS.play(Assets.ENEMY_EXPLODE);
+							
+							// break to prevent multiple overlap hit checks
+							break;
+						}
 					}
 				}
 			}
@@ -227,7 +266,7 @@ package managers
 			{
 				ap = _game.alienProjectileManager.alienProjectilesActive[i];
 				
-				if (!hero.isInvincible && hero.bounds.intersects(ap.bounds))
+				if (!_game.isGameOver && !hero.isInvincible && hero.bounds.intersects(ap.bounds))
 				{
 					trace("hero hit");
 					
@@ -242,6 +281,9 @@ package managers
 					
 					// destroy alien projectile
 					_game.alienProjectileManager.destroyAP(ap, i);
+					
+					// break to prevent multiple overlap hit checks
+					break;
 				}
 			}
 		}

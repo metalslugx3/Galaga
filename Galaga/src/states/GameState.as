@@ -12,6 +12,7 @@ package states
 	import managers.CollisionManager;
 	import managers.ExplosionManager;
 	import managers.HeroProjectileManager;
+	import managers.OptionsManager;
 	
 	import objects.Background;
 	import objects.HUD;
@@ -20,6 +21,8 @@ package states
 	import starling.animation.Juggler;
 	import starling.core.Starling;
 	import starling.display.Image;
+	
+	import treefortress.sound.SoundAS;
 	
 	public class GameState extends StarlingState
 	{
@@ -76,7 +79,7 @@ package states
 			createKeyInputs();
 			
 			_gameBounds = new Rectangle(0, 0, stage.stageWidth, stage.stageHeight);
-			_level = 15;
+			_level = 30;
 			_lastTime = 0;
 			_timeToIncreaseDifficulty = 500;
 		}
@@ -106,6 +109,7 @@ package states
 				if (!_isPaused)
 				{
 					super.update(timeDelta);
+					
 					checkDifficulty();
 					updateHero(timeDelta);
 					updateManagers(timeDelta);
@@ -155,21 +159,21 @@ package states
 			// check movement keys
 			if (_ce.input.isDoing(Hero.KB_LEFT.string))
 			{
-				_hero.x -= _hero.speed;
+				_hero.x -= _hero.speed * deltaTime;
 			}
 			else if (_ce.input.isDoing(Hero.KB_RIGHT.string))
 			{
-				_hero.x += _hero.speed;
+				_hero.x += _hero.speed * deltaTime;
 			}
 			
 			
 			if (_ce.input.isDoing(Hero.KB_UP.string))
 			{
-				_hero.y -= _hero.speed;
+				_hero.y -= _hero.speed * deltaTime;
 			}
 			else if (_ce.input.isDoing(Hero.KB_DOWN.string))
 			{
-				_hero.y += _hero.speed;
+				_hero.y += _hero.speed * deltaTime;
 			}
 			
 			
@@ -246,13 +250,27 @@ package states
 		{
 			if (_ce.input.hasDone(Hero.KB_OPTIONS.string))
 			{
-				MenuState.optionsManager.toggle();
-				pauseGame();
+				// if options not enabled and paused, we show menu
+				// if the options disabled and not paused, we show menu and pause
+				if (!MenuState.optionsManager.enabled && _isPaused)
+				{
+					MenuState.optionsManager.toggle();
+				}
+				else
+				{
+					MenuState.optionsManager.toggle();
+					pauseGame();
+				}
+				
 			}
 			
 			// check for escape to pause game
-			if (!_hasPressedEsc && _ce.input.hasDone(Hero.KB_PAUSE.string))
+			if (!_hasPressedEsc && _ce.input.isDoing(Hero.KB_PAUSE.string) && _ce.input.getAction(Hero.KB_PAUSE.string).time == 2)
 			{
+				// if the menu options is open, close it
+				if (MenuState.optionsManager.enabled)
+					MenuState.optionsManager.toggle();
+				
 				pauseGame();
 			}
 			else
@@ -266,6 +284,9 @@ package states
 		 * */
 		private function pauseGame():void
 		{
+			// play sound
+			SoundAS.play(Assets.PAUSED);
+			
 			_isPaused = !_isPaused;
 			_hasPressedEsc = true;
 			

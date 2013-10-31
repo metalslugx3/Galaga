@@ -54,7 +54,6 @@ package objects
 		{
 			_hasFired = value;
 		}
-
 	}
 }
 

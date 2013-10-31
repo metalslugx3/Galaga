@@ -2,10 +2,14 @@ package objects
 {
 	import core.Assets;
 	
+	import starling.core.Starling;
 	import starling.display.Image;
 	import starling.display.Sprite;
 	import starling.events.Event;
+	import starling.text.TextField;
+	import starling.text.TextFieldAutoSize;
 	import starling.textures.Texture;
+	import starling.utils.HAlign;
 	
 	import states.GameState;
 	
@@ -14,6 +18,8 @@ package objects
 		private var _game:GameState;
 		private var _lifeContainer:Sprite;
 		private var _lives:Array;
+		private var _scoreImage:Image;
+		private var _scoreText:TextField;
 		
 		public function HUD(game:GameState)
 		{
@@ -58,6 +64,19 @@ package objects
 				img.y = 5;
 				i++;
 			}
+			
+			// create score
+			_scoreImage = new Image(Assets.getTextureFromAtlas("score"));
+			this.addChild(_scoreImage);
+			_scoreImage.x = 480;
+			
+			_scoreText = new TextField(100, 32, "0", "quantifier", 12);
+			this.addChild(_scoreText);
+			_scoreText.color = 0xffffff;
+			_scoreText.autoSize = TextFieldAutoSize.BOTH_DIRECTIONS;
+			_scoreText.hAlign = HAlign.LEFT;
+			_scoreText.x = _scoreImage.x + 50;
+			_scoreText.y = 1;
 		}
 		
 		/**
@@ -65,8 +84,17 @@ package objects
 		 * */
 		public function removeIcon():void
 		{
+			trace("_game.hero.lives: " + _game.hero.lives);
 			// set alpha to 0; lives have already been deducted in the heroDestroy() method
 			(_lives[_game.hero.lives] as Image).alpha = 0;
+		}
+		
+		/**
+		 * 	Updates the current score.
+		 * */
+		public function updateScore():void
+		{
+			_scoreText.text = (_game.hero.totalPoints).toString();
 		}
 		
 		/**
@@ -96,6 +124,15 @@ package objects
 			// remove ref to temp
 			img.dispose();
 			img = null;
+			
+			// remove score
+			this.removeChild(_scoreImage);
+			_scoreImage.dispose();
+			_scoreImage = null;
+			
+			this.removeChild(_scoreText);
+			_scoreText.dispose();
+			_scoreText = null;
 		}
 	}
 }

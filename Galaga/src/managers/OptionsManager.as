@@ -5,6 +5,7 @@ package managers
 	
 	import core.Assets;
 	
+	import flash.display.DisplayObject;
 	import flash.display.Loader;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
@@ -13,6 +14,7 @@ package managers
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
+	import flash.ui.Keyboard;
 	import flash.utils.Dictionary;
 	
 	import flashx.textLayout.formats.TextAlign;
@@ -43,7 +45,10 @@ package managers
 		
 		
 		private var _menuSWF:MovieClip;
-		private var _menuMC:MovieClip;
+		
+		// the main time line of the SWF (aka Document Class, aka root)
+		private var _menuDocumentClass:MovieClip;
+		
 		private var _upMC:MovieClip;
 		private var _downMC:MovieClip;
 		private var _leftMC:MovieClip;
@@ -101,17 +106,21 @@ package managers
 			
 			isDoneLoading = true;
 			
-			// save the parent mc of the menu swf
-			_menuMC = ((_menuSWF.getChildAt(0) as Loader).content as MovieClip).complete_mc;
+			// save the parent mc of the menu swf (the TimeLine (root) of the SWF)
+			_menuDocumentClass = ((_menuSWF.getChildAt(0) as Loader).content as MovieClip);
+			
+			// force stop the animations from playing the moment the SWF comes into existence
+			_menuDocumentClass.stop();
+			_menuDocumentClass.complete_mc.stop();
 			
 			// save the individual MC's in separate MC because fucking mouse events how do they work
-			_upMC = _menuMC.up;
-			_downMC = _menuMC.down;
-			_leftMC = _menuMC.left;
-			_rightMC = _menuMC.right;
-			_fireMC = _menuMC.fire;
-			_bombMC = _menuMC.bomb;
-			_pauseMC = _menuMC.pause;
+			_upMC = _menuDocumentClass.complete_mc.up;
+			_downMC = _menuDocumentClass.complete_mc.down;
+			_leftMC = _menuDocumentClass.complete_mc.left;
+			_rightMC = _menuDocumentClass.complete_mc.right;
+			_fireMC = _menuDocumentClass.complete_mc.fire;
+			_bombMC = _menuDocumentClass.complete_mc.bomb;
+			_pauseMC = _menuDocumentClass.complete_mc.pause;
 			
 			// remove mouse children or the keyBG_mc and key_txt will fucking get mouse events holy shit this is taking too long
 			_upMC.mouseChildren = false;
@@ -145,12 +154,15 @@ package managers
 			//_optionsContainer.visible = true;
 			//_nativeOptionsContainer.visible = true;
 			
+			_menuDocumentClass.play();
+			_menuDocumentClass.complete_mc.play();
 			enabled = true;
 			_menuSWF.visible = true;
+			
 			_stage.addEventListener(KeyboardEvent.KEY_DOWN, keyD);
 			
 			// add a mouse over to the movie clip menu in the swf
-			_menuMC.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+			_menuDocumentClass.addEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
 		}
 		
 		/**
@@ -168,8 +180,12 @@ package managers
 			_stage.removeEventListener(KeyboardEvent.KEY_DOWN, keyD);
 			
 			// remove if it exists because most likely its still loading
-			if (_menuMC)
-				_menuMC.removeEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+			if (_menuDocumentClass)
+			{
+				_menuDocumentClass.gotoAndStop(0);
+				_menuDocumentClass.complete_mc.gotoAndStop(0);
+				_menuDocumentClass.removeEventListener(MouseEvent.MOUSE_OVER, onMouseOver);
+			}
 		}
 		
 		/**
@@ -188,38 +204,13 @@ package managers
 			_textSelected["bomb"] = false;
 			_textSelected["pause"] = false;
 			
-			if (e.target.name == "up")
-			{
-				_textSelected["up"] = true;
-			}
-			else if (e.target.name == "down")
-			{
-				_textSelected["down"] = true;
-			}
-			else if (e.target.name == "left")
-			{
-				_textSelected["left"] = true;
-			}
-			else if (e.target.name == "right")
-			{
-				_textSelected["right"] = true;
-			}
-			else if (e.target.name == "fire")
-			{
-				_textSelected["fire"] = true;
-			}
-			else if (e.target.name == "bomb")
-			{
-				_textSelected["bomb"] = true;
-			}
-			else if (e.target.name == "pause")
-			{
-				_textSelected["pause"] = true;
-			}
+			_textSelected[e.target.name] = true
 		}
 		
 		private function keyD(e:KeyboardEvent):void
 		{
+			trace("e.keyCode: " + e.keyCode);
+			
 			// O - default options key is O
 			if (e.keyCode == 79)
 			{
@@ -293,6 +284,100 @@ package managers
 					break;
 				case 40:
 					stringEquiv = "Down Arrow";
+					break;
+				case 17:
+					stringEquiv = "Control";
+					break;
+				case 17:
+					stringEquiv = "Alt";
+					break;
+				case 188:
+					stringEquiv = "Comma";
+					break;
+				case 190:
+					stringEquiv = "Period";
+					break;
+				case 186:
+					stringEquiv = "Semi-colon";
+					break;
+				case 222:
+					stringEquiv = "Apostrophe";
+					break;
+				case 219:
+					stringEquiv = "Left bracket";
+					break;
+				case 221:
+					stringEquiv = "Right bracket";
+					break;
+				case 189:
+					stringEquiv = "Hyphen";
+					break;
+				case 187:
+					stringEquiv = "Equals";
+					break;
+				case 220:
+					stringEquiv = "Backslash";
+					break;
+				case 16:
+					stringEquiv = "Shift";
+					break;
+				case 191:
+					stringEquiv = "/";
+					break;
+				case 32:
+					stringEquiv = "Spacebar";
+					break;
+				
+				/**
+				 * 	Numpad keys.
+				 * */
+				case 45:
+					stringEquiv = "KP_0";
+					break;
+				case 35:
+					stringEquiv = "KP_1";
+					break;
+				case 40:
+					stringEquiv = "KP_2";
+					break;
+				case 34:
+					stringEquiv = "KP_3";
+					break;
+				case 37:
+					stringEquiv = "KP_4";
+					break;
+				case 12:
+					stringEquiv = "KP_5";
+					break;
+				case 39:
+					stringEquiv = "KP_6";
+					break;
+				case 36:
+					stringEquiv = "KP_7";
+					break;
+				case 38:
+					stringEquiv = "KP_8";
+					break;
+				case 33:
+					stringEquiv = "KP_9";
+					break;
+				case 46:
+					stringEquiv = "KP_Delete";
+					break;
+				case 13:
+					stringEquiv = "KP_Enter";
+					break;
+				case 107:
+					stringEquiv = "KP_+";
+					break;
+				case 109:
+					stringEquiv = "KP_-";
+					break;
+				case 111:
+					stringEquiv = "KP_/";
+					break;
+				case 106:
+					stringEquiv = "KP_*";
 					break;
 				default:
 					stringEquiv = String.fromCharCode(keyCode);

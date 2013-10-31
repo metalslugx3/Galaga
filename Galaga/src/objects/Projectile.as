@@ -43,9 +43,12 @@ package objects
 		
 		public function destroy():void
 		{
-			_image.dispose();
-			this.removeChild(_image);
-			_image = null;
+			if (_image)
+			{
+				_image.dispose();
+				this.removeChild(_image);
+				_image = null;
+			}
 			
 			_game = null;
 		}

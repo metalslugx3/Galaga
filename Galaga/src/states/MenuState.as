@@ -12,12 +12,16 @@ package states
 	import managers.MasterVolumeController;
 	import managers.OptionsManager;
 	
+	import mx.core.SoundAsset;
+	
 	import objects.Background;
 	import objects.Hero;
 	
 	import starling.core.Starling;
 	import starling.display.Button;
 	import starling.events.Event;
+	
+	import treefortress.sound.SoundAS;
 	
 	/**
 	 * 	MasterVolumeController is a singleton.
@@ -48,6 +52,16 @@ package states
 		override public function initialize():void
 		{
 			super.initialize();
+			
+			// add sounds
+			SoundAS.addSound(Assets.ENEMY_EXPLODE, new Assets.S_ENEMY_EXPLODE());
+			SoundAS.addSound(Assets.BACKGROUND_MUSIC, new Assets.S_BACKGROUND_MUSIC);
+			SoundAS.addSound(Assets.PAUSED, new Assets.S_PAUSED());
+			SoundAS.addSound(Assets.PLAYER_EXPLODE, new Assets.S_PLAYER_EXPLODE());
+			SoundAS.addSound(Assets.PLAYER_SHOOT, new Assets.S_PLAYER_SHOOT());
+			SoundAS.addSound(Assets.PLAYER_SHOOT_BOMB, new Assets.S_PLAYER_SHOOT_BOMB());
+			
+			// starting volume set in MasterVolumeController
 			
 			// hide visibility until the swf's (or other stuff) is finished loading
 			(_ce.state.view as StarlingView).viewRoot.visible = false;
@@ -83,6 +97,9 @@ package states
 			
 			(_ce.state.view as StarlingView).viewRoot.visible = true;
 			this.visible = true;
+			
+			// play bg music
+			SoundAS.play(Assets.BACKGROUND_MUSIC);
 		}
 		
 		override public function update(timeDelta:Number):void

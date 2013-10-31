@@ -37,14 +37,10 @@ package
 			// remove the stage listener
 			stage.removeEventListener(flash.events.Event.ADDED_TO_STAGE, init);
 			
-			Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
+			//Multitouch.inputMode = MultitouchInputMode.TOUCH_POINT;
 			
 			// set up the Starling instance & show fps
-			setUpStarling(true);
-			
-			// TODO: set master volume; integrate featers UI
-			SoundAS.masterVolume = 1;
-			_starling.stage.addEventListener(starling.events.Event.ENTER_FRAME, loop);
+			setUpStarling(false);
 		}
 		
 		private function loop(e:starling.events.Event):void

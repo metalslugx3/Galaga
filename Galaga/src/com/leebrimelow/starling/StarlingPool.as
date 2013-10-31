@@ -5,7 +5,7 @@ package com.leebrimelow.starling
 	public class StarlingPool
 	{
 		public var items:Array;
-		private var counter:int;
+		public var counter:int;
 		
 		/**
 		 * 

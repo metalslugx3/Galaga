@@ -2,12 +2,16 @@ package managers
 {
 	import com.leebrimelow.starling.StarlingPool;
 	
+	import core.Assets;
+	
 	import objects.HeroBomb;
 	import objects.HeroProjectile;
 	
 	import org.osflash.signals.Signal;
 	
 	import states.GameState;
+	
+	import treefortress.sound.SoundAS;
 	
 	public class HeroProjectileManager
 	{
@@ -72,6 +76,8 @@ package managers
 				return;
 			}
 			
+			SoundAS.play(Assets.PLAYER_SHOOT);
+			
 			_tempBullet = _pool.getSprite() as HeroProjectile;
 			_tempBullet.x = _game.hero.x;
 			_tempBullet.y = (_game.hero.y - _game.hero.height * 0.5) - _tempBullet.height;
@@ -93,6 +99,9 @@ package managers
 				// add a signal to listen for the explosion animation complete
 				_heroBomb.explosionDone.add(explosionBombComplete);
 			}
+			
+			// play sound
+			SoundAS.play(Assets.PLAYER_SHOOT_BOMB);
 			
 			_heroBomb.x = _game.hero.x;
 			_heroBomb.y = _game.hero.y;
@@ -142,10 +151,13 @@ package managers
 			// destroy the pool
 			_pool.destroy();
 			
-			// destroy hero bomb
-			_game.removeChild(_heroBomb);
-			_heroBomb.destroy();
-			_heroBomb.dispose();
+			// destroy hero bomb if it exists (exists means fired at least once)
+			if (_heroBomb)
+			{
+				_game.removeChild(_heroBomb);
+				_heroBomb.destroy();
+				_heroBomb.dispose();
+			}
 			
 			// remove reference to _game
 			_game = null;

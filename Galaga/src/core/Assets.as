@@ -2,6 +2,8 @@ package core
 {
 	import flash.utils.Dictionary;
 	
+	import starling.text.BitmapFont;
+	import starling.text.TextField;
 	import starling.textures.Texture;
 	import starling.textures.TextureAtlas;
 
@@ -19,6 +21,9 @@ package core
 		[Embed(source="../assets/images/spaceship.png")]			// spaceship atlas, sprite sheet made directly from Flash CS6
 		public static const GraphicTextureAtlasSpaceShip:Class;
 		
+		[Embed(source="../assets/images/quantifier_0.png")]			// quantifier bitmap font
+		public static const GraphicQuantifierFont:Class;
+		
 		/**
 		 * Embed XML.
 		 * */
@@ -34,11 +39,43 @@ package core
 		[Embed(source="../assets/images/particles/explosion.pex", mimeType="application/octet-stream")]
 		public static const XMLExplosionParticle:Class;
 		
+		[Embed(source="../assets/images/quantifier.fnt", mimeType="application/octet-stream")]
+		public static const XMLQuantifierFont:Class;
+		
 		/**
 		 * 	Embed swf.
 		 * */
 		[Embed(source="../assets/images/options-menu.swf")]
 		public static const MenuSWF:Class;
+		
+		/**
+		 * 	Embed sounds.
+		 * */
+		[Embed(source="../assets/sounds/enemy-explode.mp3")]
+		public static const S_ENEMY_EXPLODE:Class;
+		
+		[Embed(source="../assets/sounds/paused.mp3")]
+		public static const S_PAUSED:Class;
+		
+		[Embed(source="../assets/sounds/player-explode.mp3")]
+		public static const S_PLAYER_EXPLODE:Class;
+		
+		[Embed(source="../assets/sounds/player-shoot.mp3")]
+		public static const S_PLAYER_SHOOT:Class;
+		
+		[Embed(source="../assets/sounds/player-shoot-bomb.mp3")]
+		public static const S_PLAYER_SHOOT_BOMB:Class;
+		
+		[Embed(source="../assets/sounds/DST-ElektroHauz-22khz-64b.mp3")]
+		public static const S_BACKGROUND_MUSIC:Class;
+		
+		// constants
+		public static const ENEMY_EXPLODE:String = "ee";
+		public static const PAUSED:String = "p";
+		public static const PLAYER_EXPLODE:String = "pe";
+		public static const PLAYER_SHOOT:String = "ps";
+		public static const PLAYER_SHOOT_BOMB:String = "psb";
+		public static const BACKGROUND_MUSIC:String = "bm";
 		
 		/**
 		 * Texture Atlas.
@@ -60,13 +97,16 @@ package core
 			
 			textureAtlasDictionary = new Dictionary();
 			textureAtlasSpaceshipDictionary = new Dictionary();
+			
+			// register bitmap font
+			TextField.registerBitmapFont(new BitmapFont(Texture.fromBitmap(new GraphicQuantifierFont()), XML(new XMLQuantifierFont())), "quantifier");
 		}
 		
 		/**
 		 * 	Gets the texture from the texture dictionary if it exists, creates it if it doesn't.
 		 * 
 		 * 	TODO:	This is only useful for single textures; need a way to access multiple textures (for mc). Until then use the TextureAtlas itself for
-		 * 			MovieClips.	
+		 * 			MovieClips. The benefits of this is the creation of a single texture and reusability.
 		 * */
 		public static function getTextureFromAtlas(name:String):Texture
 		{

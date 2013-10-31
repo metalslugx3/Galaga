@@ -2,12 +2,16 @@ package managers
 {
 	import com.leebrimelow.starling.StarlingPool;
 	
+	import core.Assets;
+	
 	import objects.Alien;
 	import objects.AlienEasy;
 	import objects.AlienHard;
 	import objects.AlienMedium;
 	
 	import states.GameState;
+	
+	import treefortress.sound.SoundAS;
 	
 	public class AlienManager
 	{
@@ -45,9 +49,9 @@ package managers
 			
 		private function initialize():void
 		{
-			_maxEasyAliens = 0;
-			_maxMediumAliens = 25;
-			_maxHardAliens = 0;
+			_maxEasyAliens = 50;
+			_maxMediumAliens = 35;
+			_maxHardAliens = 15;
 			_maxAliensAtOnce = 100;
 			
 			_poolAlienEasy = new StarlingPool(AlienEasy, _maxEasyAliens);
@@ -127,13 +131,19 @@ package managers
 					// check the fire delay if it is type or 3
 					if (a is AlienMedium)
 					{
-						// TODO: i have a bug here; see github
-						//trace("(a as AlienMedium).hasFired: " + (a as AlienMedium).hasFired)
-						// the Alien only fire when it passes a certain height and if it hasn't already fired
 						if (a.y >= a.fireHeight && !(a as AlienMedium).hasFired)
 						{
 							(a as AlienMedium).hasFired = true;
-							_game.alienProjectileManager.spawnProjectile(a.x, a.y);
+							_game.alienProjectileManager.spawnProjectile(a.x, a.y, a.type);
+						}
+					}
+					
+					if (a is AlienHard)
+					{
+						if (a.y >= a.fireHeight && !(a as AlienHard).hasFired)
+						{
+							(a as AlienHard).hasFired = true;
+							_game.alienProjectileManager.spawnProjectile(a.x, a.y, a.type);
 						}
 					}
 					
@@ -203,6 +213,14 @@ package managers
 				else
 				{
 					_tempAlien = _poolAlienHard.getSprite() as Alien;
+					
+					// set to false to reset it if it was true previously
+					(_tempAlien as AlienHard).hasFired = false;
+					
+					// set the fire delay here so that a new Alien of type 2 has a new fire rate
+					_tempAlien.fireDelay = (1 + Math.random() * 1) * 1000;	// delay between 1000 and 2000 ms
+					_tempAlien.fireHeight = 15 + Math.random() * 135;	// able to shoot between 15 and 150 pixels
+					
 					_aliensActive[2].push(_tempAlien);
 				}
 			}

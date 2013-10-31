@@ -75,9 +75,10 @@ package objects
 		
 		override public function destroy():void
 		{
-			super.destroy();
-			
+			// called before super.destroy(); or _game will be null
 			_game.pausedGameObjectsJuggler.remove(_mc);
+			
+			super.destroy();
 			
 			_mc.removeEventListener(Event.COMPLETE, explosionComplete);
 			this.removeChild(_mc);
@@ -94,7 +95,6 @@ package objects
 		{
 			_isActive = value;
 		}
-
 	}
 }
 

@@ -14,6 +14,8 @@ package objects
 	
 	import states.GameState;
 	
+	import treefortress.sound.SoundAS;
+	
 	public class Hero extends Sprite
 	{
 		//-------------
@@ -27,6 +29,8 @@ package objects
 		public static var KB_BOMB:Object = {string:"bomb", key:Keyboard.J};
 		public static var KB_PAUSE:Object = {string:"pause", key:Keyboard.P};
 		public static var KB_OPTIONS:Object = {string:"options", key:Keyboard.O};
+		
+		public var totalPoints:int;
 		
 		private var _game:GameState;
 		private var _image1:Image;
@@ -82,14 +86,16 @@ package objects
 			
 			_canFire = false;
 			_canFireBomb = true;
-			_speed = 3;
+			_speed = 150;
 			_fireRate = 20;
 			_bombRate = 200;
-			_lives = 3;
+			_lives = 1;
 			_isInvincible = false;
 			_invincibleTime = 2500;
 			_invincibleStartTime = 0;
 			_bombCoolDown = 3000;
+			
+			totalPoints = 0;
 			
 			// this is negative so the hero can fire a bomb immediately
 			_bombStartCoolDown = -_bombCoolDown;
@@ -159,6 +165,9 @@ package objects
 		 */		
 		public function destroyHero():void
 		{
+			// play sound
+			SoundAS.play(Assets.PLAYER_EXPLODE);
+			
 			// subtract 1 life
 			_lives--;
 			

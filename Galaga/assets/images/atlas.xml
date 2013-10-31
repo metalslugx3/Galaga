@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with TexturePacker http://texturepacker.com-->
-<!-- $TexturePacker:SmartUpdate:a1a41bf1c8ba9ef81c164c5b2cec0fb4$ -->
+<!-- $TexturePacker:SmartUpdate:191ae5620620747b617d82658e84de97$ -->
 <TextureAtlas imagePath="atlas.png">
     <SubTexture name="ExplosionBomb_0001" x="303" y="528" width="217" height="231" frameX="-64" frameY="-61" frameWidth="349" frameHeight="351"/>
     <SubTexture name="ExplosionBomb_0002" x="303" y="96" width="265" height="285" frameX="-39" frameY="-32" frameWidth="349" frameHeight="351"/>
@@ -25,11 +25,12 @@
     <SubTexture name="ExplosionBomb_0021" x="889" y="2" width="107" height="125" frameX="-120" frameY="-111" frameWidth="349" frameHeight="351"/>
     <SubTexture name="explosion" x="889" y="129" width="56" height="56" frameX="-4" frameY="-4" frameWidth="64" frameHeight="64"/>
     <SubTexture name="gameover_01" x="303" y="383" width="226" height="143" frameX="0" frameY="0" frameWidth="226" frameHeight="145"/>
-    <SubTexture name="options" x="50" y="995" width="57" height="18"/>
+    <SubTexture name="options" x="64" y="967" width="57" height="18"/>
     <SubTexture name="paused" x="809" y="512" width="182" height="83" frameX="-8" frameY="-10" frameWidth="200" frameHeight="95"/>
-    <SubTexture name="score" x="64" y="967" width="50" height="17"/>
+    <SubTexture name="retry" x="2" y="999" width="47" height="19" frameX="-13" frameY="-22" frameWidth="75" frameHeight="63"/>
+    <SubTexture name="score" x="99" y="987" width="50" height="17"/>
     <SubTexture name="smoke" x="2" y="967" width="30" height="30" frameX="0" frameY="0" frameWidth="32" frameHeight="32"/>
-    <SubTexture name="start" x="2" y="999" width="46" height="19" frameX="-2" frameY="0" frameWidth="48" frameHeight="19"/>
+    <SubTexture name="start" x="51" y="995" width="46" height="19" frameX="-2" frameY="0" frameWidth="48" frameHeight="19"/>
     <SubTexture name="title" x="303" y="2" width="317" height="92" frameX="0" frameY="-4" frameWidth="335" frameHeight="110"/>
     <SubTexture name="volume-icon-final" x="34" y="967" width="28" height="26"/>
 </TextureAtlas>

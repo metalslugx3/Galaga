@@ -20,6 +20,7 @@ package managers
 		
 		private var _sliderContainer:Sprite;
 		private var _slider:Slider;
+		private var _startingVolume:Number;
 		
 		// TODO: create container for icon and slider
 		
@@ -37,6 +38,8 @@ package managers
 		{
 			trace("MasterVolumController initialize()");
 			this.removeEventListener(Event.ADDED_TO_STAGE, initialize);
+			
+			_startingVolume = .1;
 			
 			createContainer();
 			createIcon();
@@ -76,6 +79,7 @@ package managers
 			_slider.addEventListener(Event.CHANGE, sliderChanged);
 			_slider.addEventListener(TouchEvent.TOUCH, onTouch);
 			_slider.x = _slider.width * 0.5;
+			_slider.value = _startingVolume * 100;
 			//_slider.isQuickHitAreaEnabled = true;
 		}
 		
@@ -101,9 +105,9 @@ package managers
 		 * */
 		private function sliderChanged(e:Event):void
 		{
-			trace((e.target as Slider).value);
+			trace((e.target as Slider).value * .01);
 			
-			SoundAS.masterVolume = (e.target as Slider).value;
+			SoundAS.masterVolume = (e.target as Slider).value * .01;
 		}
 		
 		/**
