@@ -21,7 +21,7 @@ package core
 		[Embed(source="../assets/images/spaceship.png")]			// spaceship atlas, sprite sheet made directly from Flash CS6
 		public static const GraphicTextureAtlasSpaceShip:Class;
 		
-		[Embed(source="../assets/images/quantifier_0.png")]			// quantifier bitmap font
+		[Embed(source="../assets/fonts/quantifier_0.png")]			// quantifier bitmap font
 		public static const GraphicQuantifierFont:Class;
 		
 		/**
@@ -39,7 +39,7 @@ package core
 		[Embed(source="../assets/images/particles/explosion.pex", mimeType="application/octet-stream")]
 		public static const XMLExplosionParticle:Class;
 		
-		[Embed(source="../assets/images/quantifier.fnt", mimeType="application/octet-stream")]
+		[Embed(source="../assets/fonts/quantifier.fnt", mimeType="application/octet-stream")]
 		public static const XMLQuantifierFont:Class;
 		
 		/**
