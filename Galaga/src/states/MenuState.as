@@ -6,18 +6,12 @@ package states
 	
 	import core.Assets;
 	
-	import flash.display.MovieClip;
-	import flash.events.Event;
-	
 	import managers.MasterVolumeController;
 	import managers.OptionsManager;
-	
-	import mx.core.SoundAsset;
 	
 	import objects.Background;
 	import objects.Hero;
 	
-	import starling.core.Starling;
 	import starling.display.Button;
 	import starling.events.Event;
 	
@@ -138,7 +132,7 @@ package states
 		 * */
 		private function createOptionsButton():void
 		{
-			_optionsBtn = new starling.display.Button(Assets.textureAtlas.getTexture("options"));
+			_optionsBtn = new starling.display.Button(Assets.getTextureFromAtlas("options"));
 			_optionsBtn.x = _ce.stage.stageWidth * 0.5 - _optionsBtn.width * 0.5;
 			_optionsBtn.y = _startBtn.y + 50;
 			_optionsBtn.addEventListener(starling.events.Event.TRIGGERED, buttonTriggered);
@@ -150,7 +144,7 @@ package states
 		 * */
 		private function createStartButton():void
 		{	
-			_startBtn = new starling.display.Button(Assets.textureAtlas.getTexture("start"));
+			_startBtn = new starling.display.Button(Assets.getTextureFromAtlas("start"));
 			_startBtn.x = _ce.stage.stageWidth * 0.5 - _startBtn.width * 0.5;
 			_startBtn.y = _titleCS.y + 50;
 			_startBtn.addEventListener(starling.events.Event.TRIGGERED, buttonTriggered);
@@ -164,7 +158,7 @@ package states
 		{
 			_titleCS = new CitrusSprite("title", {x:_ce.stage.stageWidth * 0.5,y:150,width:0,height:0});
 			_titleCS.registration = "center";
-			_titleCS.view = Assets.textureAtlas.getTexture("title");
+			_titleCS.view = Assets.getTextureFromAtlas("title");
 			this.add(_titleCS);
 		}
 		

@@ -12,6 +12,8 @@ package
 	import starling.core.Starling;
 	import starling.core.starling_internal;
 	import starling.events.Event;
+	import starling.utils.HAlign;
+	import starling.utils.VAlign;
 	
 	import states.MenuState;
 	
@@ -41,6 +43,7 @@ package
 			
 			// set up the Starling instance & show fps
 			setUpStarling(false);
+			//Starling.current.showStatsAt(HAlign.CENTER, VAlign.TOP);
 		}
 		
 		private function loop(e:starling.events.Event):void

@@ -89,7 +89,7 @@ package objects
 			_speed = 150;
 			_fireRate = 20;
 			_bombRate = 200;
-			_lives = 1;
+			_lives = 3;
 			_isInvincible = false;
 			_invincibleTime = 2500;
 			_invincibleStartTime = 0;

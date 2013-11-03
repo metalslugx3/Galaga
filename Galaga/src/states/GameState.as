@@ -1,6 +1,9 @@
 package states
 {
 	import citrus.core.starling.StarlingState;
+	import citrus.input.Input;
+	import citrus.input.InputController;
+	import citrus.input.controllers.Keyboard;
 	
 	import core.Assets;
 	
@@ -14,9 +17,11 @@ package states
 	import managers.HeroProjectileManager;
 	import managers.OptionsManager;
 	
+	import objects.AlienEasy;
 	import objects.Background;
 	import objects.HUD;
 	import objects.Hero;
+	import objects.TestAlien;
 	
 	import starling.animation.Juggler;
 	import starling.core.Starling;
@@ -82,6 +87,9 @@ package states
 			_level = 30;
 			_lastTime = 0;
 			_timeToIncreaseDifficulty = 500;
+			
+			
+			
 		}
 		
 		private function createPaused():void

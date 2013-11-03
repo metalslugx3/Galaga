@@ -130,6 +130,15 @@ package managers
 			_fireMC.mouseChildren = false;
 			_bombMC.mouseChildren = false;
 			_pauseMC.mouseChildren = false;
+			
+			// update texts with default keys
+			_upMC.keyBG_mc.key_txt.text = convertKeyCodeToString(Hero.KB_UP.key);
+			_downMC.keyBG_mc.key_txt.text = convertKeyCodeToString(Hero.KB_DOWN.key);
+			_leftMC.keyBG_mc.key_txt.text = convertKeyCodeToString(Hero.KB_LEFT.key);
+			_rightMC.keyBG_mc.key_txt.text = convertKeyCodeToString(Hero.KB_RIGHT.key);
+			_fireMC.keyBG_mc.key_txt.text = convertKeyCodeToString(Hero.KB_FIRE.key);
+			_bombMC.keyBG_mc.key_txt.text = convertKeyCodeToString(Hero.KB_BOMB.key);
+			_pauseMC.keyBG_mc.key_txt.text = convertKeyCodeToString(Hero.KB_PAUSE.key);
 		}
 		
 		/**
@@ -226,36 +235,43 @@ package managers
 					{
 						case "up":
 							//_textFieldsArray[0].text = convertKeyCodeToString(e.keyCode);
+							_ce.input.keyboard.changeKeyAction(Hero.KB_UP.key, e.keyCode);		// swap previous key with new key in keyboard
 							_upMC.keyBG_mc.key_txt.text = convertKeyCodeToString(e.keyCode);
 							Hero.KB_UP = {string:"up", key:e.keyCode};
 							break;
 						case "down":
 							//_textFieldsArray[1].text = convertKeyCodeToString(e.keyCode);
+							_ce.input.keyboard.changeKeyAction(Hero.KB_DOWN.key, e.keyCode);
 							_downMC.keyBG_mc.key_txt.text = convertKeyCodeToString(e.keyCode);
 							Hero.KB_DOWN = {string:"down", key:e.keyCode};
 							break;
 						case "left":
 							//_textFieldsArray[2].text = convertKeyCodeToString(e.keyCode);
+							_ce.input.keyboard.changeKeyAction(Hero.KB_LEFT.key, e.keyCode);
 							_leftMC.keyBG_mc.key_txt.text = convertKeyCodeToString(e.keyCode);
 							Hero.KB_LEFT = {string:"left", key:e.keyCode};
 							break;
 						case "right":
 							//_textFieldsArray[3].text = convertKeyCodeToString(e.keyCode);
+							_ce.input.keyboard.changeKeyAction(Hero.KB_RIGHT.key, e.keyCode);
 							_rightMC.keyBG_mc.key_txt.text = convertKeyCodeToString(e.keyCode);
 							Hero.KB_RIGHT = {string:"right", key:e.keyCode};
 							break;
 						case "fire":
 							//_textFieldsArray[4].text = convertKeyCodeToString(e.keyCode);
+							_ce.input.keyboard.changeKeyAction(Hero.KB_FIRE.key, e.keyCode);
 							_fireMC.keyBG_mc.key_txt.text = convertKeyCodeToString(e.keyCode);
 							Hero.KB_FIRE = {string:"fire", key:e.keyCode};
 							break;
 						case "bomb":
 							//_textFieldsArray[5].text = convertKeyCodeToString(e.keyCode);
+							_ce.input.keyboard.changeKeyAction(Hero.KB_BOMB.key, e.keyCode);
 							_bombMC.keyBG_mc.key_txt.text = convertKeyCodeToString(e.keyCode);
 							Hero.KB_BOMB = {string:"bomb", key:e.keyCode};
 							break;
 						case "pause":
 							//_textFieldsArray[6].text = convertKeyCodeToString(e.keyCode);
+							_ce.input.keyboard.changeKeyAction(Hero.KB_PAUSE.key, e.keyCode);
 							_pauseMC.keyBG_mc.key_txt.text = convertKeyCodeToString(e.keyCode);
 							Hero.KB_PAUSE = {string:"pause", key:e.keyCode};
 							break;
